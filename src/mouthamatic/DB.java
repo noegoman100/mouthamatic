@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 
+
 /**
  *
  * @author edjsa
@@ -19,7 +20,8 @@ import java.sql.Statement;
 public class DB {
     
         private Connection conn = null;
-	private final String driver = "com.mysql.cj.jdbc.Driver";
+	//private final String driver = "com.mysql.cj.jdbc.Driver";
+        private final String driver = "com.mysql.jdbc.Driver";
 	private final String db = "word-to-phoneme";
 	private final String url = "jdbc:mysql://phoneme-db.crm7fj6xpwpv.us-west-1.rds.amazonaws.com/" + db;
 	private final String user = "admin";
@@ -29,7 +31,7 @@ public class DB {
     public void connect() {
         System.out.println("DatabaseConnection.connect() was called");
         try {
-		Class.forName(driver);
+		//Class.forName(driver);  //This was for older version. No longer needed. 
 		conn = DriverManager.getConnection(url,user,pass);
 		System.out.println("Connected to database: " + db);
 	} catch (SQLException e) {
