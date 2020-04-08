@@ -38,6 +38,7 @@ public class DB {
 		System.out.println("VendorError: "+e.getErrorCode());
 	} catch (Exception e) {
              System.out.println("Exception from DatabaseConnection.java : connect()");
+             e.printStackTrace();
         }//End Try
     }
     
