@@ -5,6 +5,7 @@
  */
 package mouthamatic;
 
+import java.sql.ResultSet;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,9 +17,15 @@ import javafx.stage.Stage;
  * @author Ed
  */
 public class Main extends Application {
+    public static DB db = new DB(); 
     
     @Override
     public void start(Stage stage) throws Exception {
+        db.connect();
+        ResultSet rs = db.sendQuery("SELECT * FROM user");
+        while(rs.next()){
+            System.out.println(rs.getString(2));
+        }
         Parent root = FXMLLoader.load(getClass().getResource("FXMLLoginView.fxml"));
         
         Scene scene = new Scene(root);
