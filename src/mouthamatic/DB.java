@@ -41,35 +41,35 @@ public class DB {
         }//End Try
     }
     
-        public ResultSet sendQuery(String query){
-        //System.out.println("DatabaseConnection.sendQuery called");
-        ResultSet resultSet = null;
-        Statement statement = null;
-        try {            
-            statement = conn.createStatement(); 
-            resultSet = statement.executeQuery(query); 
-     
-            
-        } catch (Exception e) {
-            System.out.println("Exception thrown in DatabaseConnection.sendQuery() :Try Block");
-        }//End Try+Catch
-        
-        return resultSet;
-    }
-    
-        public void sendUpdate(String updateSQL){
-        //System.out.println("DatabaseConnection.sendQuery called");
-        ResultSet resultSet = null;
-        Statement statement = null;
-        try {            
-            statement = conn.createStatement(); 
-            statement.executeUpdate(updateSQL); 
-     
-            
-        } catch (Exception e) {
-            System.out.println("Exception thrown in DatabaseConnection.sendUpdate() :Try Block");
-        }//End Try+Catch
-        
-        
-    }
+    public ResultSet sendQuery(String query){
+    //System.out.println("DatabaseConnection.sendQuery called");
+    ResultSet resultSet = null;
+    Statement statement = null;
+    try {            
+        statement = conn.createStatement(); 
+        resultSet = statement.executeQuery(query); 
+
+
+    } catch (Exception e) {
+        System.out.println("Exception thrown in DatabaseConnection.sendQuery() :Try Block");
+    }//End Try+Catch
+
+    return resultSet;
+}
+
+    public void sendUpdate(String updateSQL){
+    //System.out.println("DatabaseConnection.sendQuery called");
+    ResultSet resultSet = null;
+    Statement statement = null;
+    try {            
+        statement = conn.createStatement(); 
+        statement.executeUpdate(updateSQL); 
+
+
+    } catch (Exception e) {
+        System.out.println("Exception thrown in DatabaseConnection.sendUpdate() :Try Block");
+    }//End Try+Catch
+
+
+}
 }
