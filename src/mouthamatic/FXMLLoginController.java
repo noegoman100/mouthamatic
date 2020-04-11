@@ -6,11 +6,17 @@
 package mouthamatic;
 
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 
 
 /**
@@ -21,6 +27,11 @@ public class FXMLLoginController implements Initializable {
     
     @FXML
     private Label label;
+    @FXML
+    private TextField usernameTextField;
+    @FXML 
+    private PasswordField passwordField;
+    private DB db;
     
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -28,9 +39,37 @@ public class FXMLLoginController implements Initializable {
         label.setText("Hello World!");
     }
     
+    @FXML
+    private void loginButtonAction(ActionEvent event) {
+        //Todo Validate Username and Password are not blank
+        String username = usernameTextField.getText();
+        String password = passwordField.getText();
+        String query = "SELECT user_name, user_password FROM user WHERE user_name = '" 
+                + username + "';";
+        ResultSet rs = db.sendQuery(query);
+        try {
+            rs.next();
+            String usernameDB = rs.getString(1);
+            String passwordDB = rs.getString(2);
+            if (password.equals(passwordDB)){
+                try {
+                    Main.screenManager.changeStage(ScreenEnum.HOME);
+                } catch (Exception ex) {
+                    Logger.getLogger(FXMLLoginController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(FXMLLoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        db = Main.db;
+        db.connect();
     }    
     
 }
