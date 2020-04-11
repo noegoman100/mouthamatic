@@ -6,6 +6,7 @@
 package mouthamatic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -13,11 +14,14 @@ import java.util.ArrayList;
  */
 public class SentenceParcer {
     private String sentence;
-    private ArrayList<Word> wordList = new ArrayList<Word>();
-    private ParcedSentence parcedSentence = new ParcedSentence();
+    //private static ParcedSentence parcedSentence = new ParcedSentence();
     
-    public ParcedSentence parceSentence(Sentence sentence){
-    
-        return parcedSentence;
+    public static ArrayList<String> parceSentence(String sentence){
+        //TODO
+        ArrayList<String> wordList = new ArrayList<String>();
+        String[] words = sentence.split(" ");
+        wordList.addAll(Arrays.asList(words));
+        
+        return wordList;
     }
 }

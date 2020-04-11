@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 
@@ -52,17 +54,17 @@ public class DB {
     
     public ResultSet sendQuery(String query){
     //System.out.println("DatabaseConnection.sendQuery called");
+    ExecutorService executor = Executors.newSingleThreadExecutor();
     ResultSet resultSet = null;
     Statement statement = null;
     try {            
         statement = conn.createStatement(); 
         resultSet = statement.executeQuery(query); 
-
-
     } catch (Exception e) {
         System.out.println("Exception thrown in DatabaseConnection.sendQuery() :Try Block");
     }//End Try+Catch
 
+    executor.shutdown();
     return resultSet;
 }
 
