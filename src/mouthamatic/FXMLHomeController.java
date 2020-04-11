@@ -6,6 +6,7 @@
 package mouthamatic;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,9 +33,11 @@ public class FXMLHomeController implements Initializable {
     
     @FXML
     private void generateButtonAction(ActionEvent event) {
-        System.out.println(sentenceTextField.getText());
+        //System.out.println(sentenceTextField.getText());
         String sentence = sentenceTextField.getText();
-        
+        List<String> parcedSentence = SentenceParcer.parceSentence(sentence);
+        System.out.println(parcedSentence.toString());
+        List<Integer> parcedSymbols = WordParcer.parceWords(parcedSentence);
     }
     
 }

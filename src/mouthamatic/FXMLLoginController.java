@@ -41,6 +41,13 @@ public class FXMLLoginController implements Initializable {
     
     @FXML
     private void loginButtonAction(ActionEvent event) {
+        //***** TEMP for Testing. 
+        try {
+            Main.screenManager.changeStage(ScreenEnum.HOME);
+        } catch (Exception ex) {
+            Logger.getLogger(FXMLLoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //***** END TEMP for Testing.         
         //Todo Validate Username and Password are not blank
         String username = usernameTextField.getText();
         String password = passwordField.getText();
@@ -70,6 +77,7 @@ public class FXMLLoginController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         db = Main.db;
         db.connect();
+
     }    
     
 }
