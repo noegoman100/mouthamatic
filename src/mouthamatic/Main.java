@@ -18,10 +18,12 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
     public static DB db = new DB(); 
+    public static ScreenManager screenManager;
     
     @Override
     public void start(Stage stage) throws Exception {
         db.connect();
+        
         ResultSet rs = db.sendQuery("SELECT * FROM user");
         while(rs.next()){
             System.out.println(rs.getString(2));
@@ -31,6 +33,7 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         
         stage.setScene(scene);
+        screenManager = new ScreenManager(stage, scene);
         stage.show();
     }
 

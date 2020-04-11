@@ -19,9 +19,9 @@ import java.sql.Statement;
  */
 public class DB {
     
-        private Connection conn = null;
+        private static Connection conn = null;
 	//private final String driver = "com.mysql.cj.jdbc.Driver";
-        private final String driver = "com.mysql.jdbc.Driver";
+        //private final String driver = "com.mysql.jdbc.Driver";
 	private final String db = "word-to-phoneme";
 	private final String url = "jdbc:mysql://phoneme-db.crm7fj6xpwpv.us-west-1.rds.amazonaws.com/" + db;
 	private final String user = "admin";
@@ -31,18 +31,24 @@ public class DB {
     public void connect() {
         System.out.println("DatabaseConnection.connect() was called");
         try {
-		//Class.forName(driver);  //This was for older version. No longer needed. 
-		conn = DriverManager.getConnection(url,user,pass);
-		System.out.println("Connected to database: " + db);
+            //Class.forName(driver);  //This was for older version. No longer needed. 
+            if (conn == null) {
+                conn = DriverManager.getConnection(url,user,pass);
+                System.out.println("Connected to database: " + db);
+            } else {
+                System.out.println("Database may already be connected");
+            }
 	} catch (SQLException e) {
-		System.out.println("SQLException: "+e.getMessage());
-		System.out.println("SQLState: "+e.getSQLState());
-		System.out.println("VendorError: "+e.getErrorCode());
+            System.out.println("SQLException: "+e.getMessage());
+            System.out.println("SQLState: "+e.getSQLState());
+            System.out.println("VendorError: "+e.getErrorCode());
 	} catch (Exception e) {
              System.out.println("Exception from DatabaseConnection.java : connect()");
              e.printStackTrace();
         }//End Try
     }
+    
+
     
     public ResultSet sendQuery(String query){
     //System.out.println("DatabaseConnection.sendQuery called");
