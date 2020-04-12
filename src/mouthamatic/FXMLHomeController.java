@@ -34,7 +34,7 @@ public class FXMLHomeController implements Initializable {
     @FXML
     private void generateButtonAction(ActionEvent event) {
         //System.out.println(sentenceTextField.getText());
-        String sentence = sentenceTextField.getText();
+        String sentence = sentenceTextField.getText().toUpperCase();
         List<String> parcedSentence = SentenceParcer.parceSentence(sentence);
         System.out.println(parcedSentence.toString());
         List<Integer> parcedSymbols = WordParcer.parceWords(parcedSentence);

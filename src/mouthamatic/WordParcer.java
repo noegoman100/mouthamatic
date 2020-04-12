@@ -24,7 +24,7 @@ public class WordParcer {
         //each word. 
         
         //Add a closed mouth symbol to the beginning //TODO make reference variable
-        symbolIdList.add(66);
+        symbolIdList.add(999);
         for (int i = 0; i < incomingWordList.size(); i++){
             try {
                 ResultSet rs;
@@ -37,7 +37,7 @@ public class WordParcer {
                     symbolIdList.add(rs.getInt(4));
                 }
                 //Add symbol for a closed mouth
-                symbolIdList.add(66); //TODO Make this a reference. 
+                symbolIdList.add(999); //TODO Make this a reference.
             } catch (SQLException ex) {
                 Logger.getLogger(WordParcer.class.getName()).log(Level.SEVERE, null, ex);
             }
