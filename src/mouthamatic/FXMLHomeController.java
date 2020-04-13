@@ -34,10 +34,29 @@ public class FXMLHomeController implements Initializable {
     @FXML
     private void generateButtonAction(ActionEvent event) {
         //System.out.println(sentenceTextField.getText());
-        String sentence = sentenceTextField.getText().toUpperCase();
-        List<String> parcedSentence = SentenceParcer.parceSentence(sentence);
-        System.out.println(parcedSentence.toString());
-        List<Integer> parcedSymbols = WordParcer.parceWords(parcedSentence);
+//        String sentence = sentenceTextField.getText().toUpperCase();
+//        List<String> parcedSentence = SentenceParcer.parceSentence(sentence);
+//        System.out.println(parcedSentence.toString());
+//        List<Integer> parcedSymbols = WordParcer.parceWords(parcedSentence);
+//        List<String> imageSequence = SymbolMapper.mapSymbolsTo(parcedSymbols, 3);
+
+//        System.out.println("*********** Start ***********");
+//        SentenceData sentenceData = new SentenceData(sentenceTextField.getText().toUpperCase());
+//        sentenceData = SentenceParcer.parceSentence(sentenceData);
+//        sentenceData = WordParcer.parceWords(sentenceData);
+//        sentenceData = SymbolMapper.mapSymbolsTo(sentenceData, 3);
+//        sentenceData = ImageMapper.mapImages(sentenceData);
+//        System.out.println("*********** End ***********");
+
+        System.out.println("*********** Start 2 ***********");
+        SentenceData sentenceData = new SentenceData(sentenceTextField.getText().toUpperCase());
+        SentenceParcer.parceSentence(sentenceData);
+        WordParcer.parceWords(sentenceData);
+        SymbolMapper.mapSymbolsTo(sentenceData, 3);
+        ImageMapper.mapImages(sentenceData);
+        System.out.println("*********** End 2 ***********");
+
+
     }
     
 }

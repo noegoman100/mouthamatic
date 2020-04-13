@@ -13,15 +13,22 @@ import java.util.Arrays;
  * @author Ed
  */
 public class SentenceParcer {
-    private String sentence;
     //private static ParcedSentence parcedSentence = new ParcedSentence();
     
-    public static ArrayList<String> parceSentence(String sentence){
-        //TODO
+//    public static ArrayList<String> parceSentence(String sentence){
+//        //TODO
+//        ArrayList<String> wordList = new ArrayList<String>();
+//        String[] words = sentence.split(" ");
+//        wordList.addAll(Arrays.asList(words));
+//
+//        return wordList;
+//    }
+    public static SentenceData parceSentence(SentenceData sentenceData){
         ArrayList<String> wordList = new ArrayList<String>();
-        String[] words = sentence.split(" ");
+        String[] words = sentenceData.getRawSentence().split(" ");
         wordList.addAll(Arrays.asList(words));
-        
-        return wordList;
+        sentenceData.setParcedSentence(wordList);
+
+        return sentenceData;
     }
 }
