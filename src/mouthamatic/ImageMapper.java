@@ -13,7 +13,7 @@ public class ImageMapper {
         System.out.println("mapImages called. Image Sequence Size: " + sentenceData.getParcedImageSequence().size());
         List<Image> imageList = new ArrayList<>();
         for (int i = 0; i < sentenceData.getParcedImageSequence().size(); i++) {
-            System.out.println("mapImages inside for loop.");
+            //System.out.println("mapImages inside for loop.");
             try {
                 //String filePath = ".//Images//" + sentenceData.getParcedImageSequence().get(i);
                 String filePath = "E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mike-LipSet-Layers-TanBG\\"
