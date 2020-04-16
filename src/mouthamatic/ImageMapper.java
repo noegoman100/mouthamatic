@@ -18,10 +18,8 @@ public class ImageMapper {
                 //String filePath = ".//Images//" + sentenceData.getParcedImageSequence().get(i);
                 String filePath = "E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mike-LipSet-Layers-TanBG\\"
                         + sentenceData.getParcedImageSequence().get(i); //TODO make this relative! Or use a string variable or option or something.
-                //System.out.println(filePath); //TODO temp
                 FileInputStream inputStream = new FileInputStream(filePath);
                 Image image = new Image(inputStream);
-                //System.out.println(image.getWidth()); //TODO temp
                 imageList.add(image);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

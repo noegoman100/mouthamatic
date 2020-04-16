@@ -37,7 +37,9 @@ public class SymbolMapper {
         List<String> imageSequence = new ArrayList<>();
 
         for (int i = 0; i < sentenceData.getParcedSymbols().size(); i++) {
-            rs = Main.db.sendQuery("SELECT image_url FROM `word-to-phoneme`.image_map WHERE symbol_id_pk2 = " + sentenceData.getParcedSymbols().get(i) + ";");
+            rs = Main.db.sendQuery("SELECT image_url FROM `word-to-phoneme`.image_map WHERE symbol_id_pk2 = " + sentenceData.getParcedSymbols().get(i)
+                    + " AND mouth_pair_id_pk1 = " + mouth_pair_id
+                    + ";");
             while (true){
                 try {
                     if (!rs.next()) break;
