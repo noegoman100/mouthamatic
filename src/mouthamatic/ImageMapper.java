@@ -16,7 +16,7 @@ public class ImageMapper {
             //System.out.println("mapImages inside for loop.");
             try {
                 //String filePath = ".//Images//" + sentenceData.getParcedImageSequence().get(i);
-                String filePath = "E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mike-LipSet-Layers-TanBG\\"
+                String filePath = "E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mouth_Image_Sets\\"
                         + sentenceData.getParcedImageSequence().get(i); //TODO make this relative! Or use a string variable or option or something.
                 FileInputStream inputStream = new FileInputStream(filePath);
                 Image image = new Image(inputStream);
