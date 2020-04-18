@@ -19,8 +19,8 @@ import java.util.concurrent.Executors;
  *
  * @author edjsa
  */
-public class DB {
-    
+public class DB  {
+
         private static Connection conn = null;
 	//private final String driver = "com.mysql.cj.jdbc.Driver";
         //private final String driver = "com.mysql.jdbc.Driver";
@@ -33,7 +33,7 @@ public class DB {
     public void connect() {
         System.out.println("DatabaseConnection.connect() was called");
         try {
-            //Class.forName(driver);  //This was for older version. No longer needed. 
+            //Class.forName(driver);  //This was for older version. No longer needed.
             if (conn == null) {
                 conn = DriverManager.getConnection(url,user,pass);
                 System.out.println("Connected to database: " + db);
@@ -49,7 +49,7 @@ public class DB {
              e.printStackTrace();
         }//End Try
     }
-    
+
 
     
     public ResultSet sendQuery(String query){
