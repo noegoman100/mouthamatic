@@ -9,23 +9,23 @@ import java.util.List;
 public class SentenceData {
 
     String rawSentence;
-    List<Word> ParcedSentenceWordsList = new ArrayList<>();
-    List<String> parcedSentence;
-    List<Integer> parcedSymbols;
-    List<String> parcedImageSequence;
-    List<Image> parcedImages;
+    List<Word> ParsedSentenceWordsList = new ArrayList<>();
+    List<String> parsedSentence;
+    List<Integer> parsedSymbols;
+    List<String> parsedImageSequence;
+    List<Image> parsedImages;
 
     //Constructor
     public SentenceData(String rawSentence){
         setRawSentence(rawSentence);
     }
 
-    public List<Image> getParcedImages() {
-        return parcedImages;
+    public List<Image> getParsedImages() {
+        return parsedImages;
     }
 
-    public void setParcedImages(List<Image> parcedImages) {
-        this.parcedImages = parcedImages;
+    public void setParsedImages(List<Image> parsedImages) {
+        this.parsedImages = parsedImages;
     }
 
     public String getRawSentence() {
@@ -36,35 +36,35 @@ public class SentenceData {
         this.rawSentence = rawSentence;
     }
 
-    public List<String> getParcedSentence() {
-        return parcedSentence;
+    public List<String> getParsedSentence() {
+        return parsedSentence;
     }
 
-    public void setParcedSentence(List<String> parcedSentence) {
-        this.parcedSentence = parcedSentence;
+    public void setParsedSentence(List<String> parsedSentence) {
+        this.parsedSentence = parsedSentence;
     }
 
-    public List<Integer> getParcedSymbols() {
-        return parcedSymbols;
+    public List<Integer> getParsedSymbols() {
+        return parsedSymbols;
     }
 
-    public void setParcedSymbols(List<Integer> parcedSymbols) {
-        this.parcedSymbols = parcedSymbols;
+    public void setParsedSymbols(List<Integer> parsedSymbols) {
+        this.parsedSymbols = parsedSymbols;
     }
 
-    public List<String> getParcedImageSequence() {
-        return parcedImageSequence;
+    public List<String> getParsedImageSequence() {
+        return parsedImageSequence;
     }
 
-    public void setParcedImageSequence(List<String> parcedImageSequence) {
-        this.parcedImageSequence = parcedImageSequence;
+    public void setParsedImageSequence(List<String> parsedImageSequence) {
+        this.parsedImageSequence = parsedImageSequence;
     }
 
-    public List<Word> getParcedSentenceWordsList() {
-        return ParcedSentenceWordsList;
+    public List<Word> getParsedSentenceWordsList() {
+        return ParsedSentenceWordsList;
     }
 
-    public void setParcedSentenceWordsList(List<Word> parcedSentenceWords) {
-        this.ParcedSentenceWordsList = parcedSentenceWords;
+    public void setParsedSentenceWordsList(List<Word> parsedSentenceWords) {
+        this.ParsedSentenceWordsList = parsedSentenceWords;
     }
 }

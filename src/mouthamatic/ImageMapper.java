@@ -10,14 +10,12 @@ import java.util.List;
 
 public class ImageMapper {
     public static SentenceData mapImages(SentenceData sentenceData){
-        System.out.println("mapImages called. Image Sequence Size: " + sentenceData.getParcedImageSequence().size());
+        System.out.println("mapImages called. Image Sequence Size: " + sentenceData.getParsedImageSequence().size());
         List<Image> imageList = new ArrayList<>();
-        for (int i = 0; i < sentenceData.getParcedImageSequence().size(); i++) {
-            //System.out.println("mapImages inside for loop.");
+        for (int i = 0; i < sentenceData.getParsedImageSequence().size(); i++) {
             try {
-                //String filePath = ".//Images//" + sentenceData.getParcedImageSequence().get(i);
                 String filePath = "E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mouth_Image_Sets\\"
-                        + sentenceData.getParcedImageSequence().get(i); //TODO make this relative! Or use a string variable or option or something.
+                        + sentenceData.getParsedImageSequence().get(i); //TODO make this relative! Or use a string variable or option or something.
                 FileInputStream inputStream = new FileInputStream(filePath);
                 Image image = new Image(inputStream);
                 imageList.add(image);
@@ -26,7 +24,7 @@ public class ImageMapper {
             }
         }
 
-        sentenceData.setParcedImages(imageList);
+        sentenceData.setParsedImages(imageList);
         return sentenceData;
     }
 }
