@@ -47,6 +47,7 @@ public class WordParcer {
 //    }
     public static SentenceData parceWords(SentenceData sentenceData){
         List<Integer> symbolIdList = new ArrayList<Integer>();
+        List<Integer> symbolIdList2 = new ArrayList<>();
         //For each word, send a query. Pull the resultSet into the word list. Add a closed mouth symbol_id between
         //each word.
 
@@ -69,8 +70,33 @@ public class WordParcer {
                 Logger.getLogger(WordParcer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        System.out.println(symbolIdList.toString());
+        System.out.println(symbolIdList.toString()); //TODO temp
         sentenceData.setParcedSymbols(symbolIdList);
+        /////**** New version with Word object
+        //symbolIdList2.add(999);
+        for (int i = 0; i < sentenceData.getParcedSentenceWordsList().size(); i++){
+            try {
+                ResultSet rs;
+                String query;
+                // SELECT word_name, word_id_pk1, part_segment_pk2, symbol_id_fk FROM `word-to-phoneme`.word_parts JOIN `word-to-phoneme`.word ON word_id = word_id_pk1 WHERE word_name = "AARON";
+                query = "SELECT word_name, word_id_pk1, part_segment_pk2, symbol_id_fk FROM `word-to-phoneme`.word_parts JOIN `word-to-phoneme`.word ON word_id = word_id_pk1 WHERE word_name = \""
+                        + sentenceData.getParcedSentenceWordsList().get(i).getWord_name() + "\";";
+                rs = Main.db.sendQuery(query);
+                while(rs.next()){
+                    symbolIdList2.add(rs.getInt(4));
+                    sentenceData.getParcedSentenceWordsList().get(i).getPhonemes().add(rs.getInt(4));
+                }
+                //Add symbol for a closed mouth
+                //symbolIdList2.add(999); //TODO Make this a reference.
+            } catch (SQLException ex) {
+                Logger.getLogger(WordParcer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        //sentenceData.setParcedSymbols(symbolIdList2);
+        /////**** End New Version
+
+
+
         return sentenceData;
     }
     

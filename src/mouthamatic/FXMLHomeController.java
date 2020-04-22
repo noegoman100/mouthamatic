@@ -84,7 +84,7 @@ public class FXMLHomeController implements Initializable {
         sentenceData = new SentenceData(sentenceTextField.getText().toUpperCase());
         SentenceParcer.parceSentence(sentenceData);
         WordParcer.parceWords(sentenceData);
-        SymbolMapper.mapSymbolsTo(sentenceData, mGetMouthPairId()); //TODO get mouth_pair_id from DB
+        SymbolMapper.mapSymbolsTo(sentenceData, mGetMouthPairId());
         ImageMapper.mapImages(sentenceData);
         System.out.println("*********** End Data Transformation ***********");
 

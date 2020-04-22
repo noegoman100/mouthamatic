@@ -3,15 +3,22 @@ package mouthamatic;
 import javafx.scene.image.Image;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SentenceData {
 
     String rawSentence;
+    List<Word> ParcedSentenceWordsList = new ArrayList<>();
     List<String> parcedSentence;
     List<Integer> parcedSymbols;
     List<String> parcedImageSequence;
     List<Image> parcedImages;
+
+    //Constructor
+    public SentenceData(String rawSentence){
+        setRawSentence(rawSentence);
+    }
 
     public List<Image> getParcedImages() {
         return parcedImages;
@@ -19,10 +26,6 @@ public class SentenceData {
 
     public void setParcedImages(List<Image> parcedImages) {
         this.parcedImages = parcedImages;
-    }
-
-    public SentenceData(String rawSentence){
-        setRawSentence(rawSentence);
     }
 
     public String getRawSentence() {
@@ -55,5 +58,13 @@ public class SentenceData {
 
     public void setParcedImageSequence(List<String> parcedImageSequence) {
         this.parcedImageSequence = parcedImageSequence;
+    }
+
+    public List<Word> getParcedSentenceWordsList() {
+        return ParcedSentenceWordsList;
+    }
+
+    public void setParcedSentenceWordsList(List<Word> parcedSentenceWords) {
+        this.ParcedSentenceWordsList = parcedSentenceWords;
     }
 }
