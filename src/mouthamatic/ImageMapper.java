@@ -15,7 +15,7 @@ public class ImageMapper {
         for (int i = 0; i < sentenceData.getParsedImageSequence().size(); i++) {
             try {
                 String filePath = "resources\\mouth_image_sets\\"
-                        + sentenceData.getParsedImageSequence().get(i); //TODO make this relative! Or use a string variable or option or something.
+                        + sentenceData.getParsedImageSequence().get(i);
                 FileInputStream inputStream = new FileInputStream(filePath);
                 Image image = new Image(inputStream);
                 imageList.add(image);

@@ -154,7 +154,7 @@ private void mAddImagesToScrollPane(SentenceData sentenceData, ScrollPane scroll
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //TODO finish populating query choice list
+
 
         while (true) {
             try {
@@ -172,11 +172,14 @@ private void mAddImagesToScrollPane(SentenceData sentenceData, ScrollPane scroll
 
             @Override
             public void handle(MouseEvent event) {
-                //TODO On Mouse Click, query database, and return results to dynamic table.
                 System.out.println("Item clicked at location: " + queryListView.getSelectionModel().getSelectedIndex());//TODO temp
-
+                mPopulateReportsTable(queryListView.getSelectionModel().getSelectedIndex());
             }
 
         });
+    }
+
+    private void mPopulateReportsTable(int index){
+        //TODO implement me.
     }
 }

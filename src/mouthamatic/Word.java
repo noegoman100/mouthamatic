@@ -10,7 +10,6 @@ public class Word {
     //Constructor
     public Word(String word){
         setWord_name(word);
-        System.out.println(word); //TODO temp
     }
 
     public String getWord_name() {
