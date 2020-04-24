@@ -14,7 +14,7 @@ public class ImageMapper {
         List<Image> imageList = new ArrayList<>();
         for (int i = 0; i < sentenceData.getParsedImageSequence().size(); i++) {
             try {
-                String filePath = "E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mouth_Image_Sets\\"
+                String filePath = "resources\\mouth_image_sets\\"
                         + sentenceData.getParsedImageSequence().get(i); //TODO make this relative! Or use a string variable or option or something.
                 FileInputStream inputStream = new FileInputStream(filePath);
                 Image image = new Image(inputStream);
