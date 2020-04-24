@@ -19,12 +19,15 @@ import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -45,28 +48,16 @@ public class FXMLHomeController implements Initializable {
     private ScrollPane imageScrollPane;
     @FXML
     private ComboBox mouthPairComboBox;
+    @FXML
+    private ListView queryListView;
 
     private SentenceData sentenceData;
 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO load the ComboBox
-        List<String> choicesArray = new ArrayList<>();
-        ResultSet rs = Main.db.sendQuery("SELECT mouth_pair_name FROM `word-to-phoneme`.mouth_pair_type ORDER BY mouth_pair_type_id ASC;");
-        while (true){
-            try {
-                if (!rs.next()) break;
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            try {
-                choicesArray.add(rs.getString(1));
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-        mouthPairComboBox.setItems(FXCollections.observableList(choicesArray));
+        mInitializeGenerateView();
+        mInitializeReportsView();
     }    
     
     @FXML
@@ -136,5 +127,56 @@ private void mAddImagesToScrollPane(SentenceData sentenceData, ScrollPane scroll
             e.printStackTrace();
         }
 
+    }
+
+    private void mInitializeGenerateView(){
+        List<String> choicesArray = new ArrayList<>();
+        ResultSet rs = Main.db.sendQuery("SELECT mouth_pair_name FROM `word-to-phoneme`.mouth_pair_type ORDER BY mouth_pair_type_id ASC;");
+        while (true){
+            try {
+                if (!rs.next()) break;
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            try {
+                choicesArray.add(rs.getString(1));
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        mouthPairComboBox.setItems(FXCollections.observableList(choicesArray));
+    }
+
+    private void mInitializeReportsView() {
+        ResultSet rs = null;
+        try {
+            rs = Main.db.sendQuery("SELECT report_query_name FROM `word-to-phoneme`.report_query ORDER BY report_query_name DESC;");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //TODO finish populating query choice list
+
+        while (true) {
+            try {
+                if (!rs.next()) break;
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            try {
+                queryListView.getItems().add(rs.getString(1));
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        queryListView.setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+            @Override
+            public void handle(MouseEvent event) {
+                //TODO On Mouse Click, query database, and return results to dynamic table.
+                System.out.println("Item clicked at location: " + queryListView.getSelectionModel().getSelectedIndex());//TODO temp
+
+            }
+
+        });
     }
 }

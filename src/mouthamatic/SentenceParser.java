@@ -16,7 +16,7 @@ public class SentenceParser {
 
     public static SentenceData parseSentence(SentenceData sentenceData){
         ArrayList<String> wordList = new ArrayList<String>();
-        String[] words = sentenceData.getRawSentence().split("[ .,!?;:@#&]+");//TODO add regex for some punctuation
+        String[] words = sentenceData.getRawSentence().split("[ .,!?;:@#&]+");
         wordList.addAll(Arrays.asList(words));
         sentenceData.setParsedSentence(wordList);
         //Below is the new Word object, replacing String object
