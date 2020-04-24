@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -40,6 +41,7 @@
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <ListView fx:id="queryListView" layoutX="14.0" layoutY="86.0" prefHeight="650.0" prefWidth="200.0" />
+                        <TableView fx:id="reportsTableView" layoutX="245.0" layoutY="86.0" prefHeight="651.0" prefWidth="911.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
