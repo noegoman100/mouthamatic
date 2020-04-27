@@ -208,7 +208,7 @@ public class FXMLHomeController implements Initializable {
 
     }
 
-    private void mSendQueryToTable(String query){ //From: https://blog.ngopal.com.np/2011/10/19/dyanmic-tableview-data-from-database/
+    private void mSendQueryToTable(String query){ //this method From: https://blog.ngopal.com.np/2011/10/19/dyanmic-tableview-data-from-database/
         try {
             ResultSet rs = Main.db.sendQuery(query);
             reportsTableView.getColumns().clear();
