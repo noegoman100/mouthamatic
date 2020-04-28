@@ -26,6 +26,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -53,7 +54,13 @@ public class FXMLHomeController implements Initializable {
     private ListView queryListView;
     @FXML
     private TableView reportsTableView;
+    @FXML
+    private TableView dataTableView;
+    @FXML
+    private TextField searchWordTextField;
+
     private ObservableList<ObservableList> data;
+    private ObservableList<ObservableList> wordData;
     private SentenceData sentenceData;
 
 
@@ -183,9 +190,7 @@ public class FXMLHomeController implements Initializable {
     }
 
     private void mPopulateReportsTable(String selectionName){
-        //TODO implement me.
-        //?? Add columns to table
-        //?? Add data to columns.
+
         data = FXCollections.observableArrayList();
         System.out.println(selectionName); //TODO Temp
         ResultSet rsSelection = Main.db.sendQuery("SELECT report_query_string FROM `word-to-phoneme`.report_query "
@@ -212,6 +217,14 @@ public class FXMLHomeController implements Initializable {
         try {
             ResultSet rs = Main.db.sendQuery(query);
             reportsTableView.getColumns().clear();
+            reportsTableView.setEditable(true);
+            final EventHandler<TableColumn.CellEditEvent<ObservableList, String>> dataEditCommitHandler = new EventHandler<TableColumn.CellEditEvent<ObservableList, String>>() {
+                @Override
+                public void handle(TableColumn.CellEditEvent<ObservableList, String> event) {
+                    System.out.println("Send query to DB with data currently in the cell");//TODO temp.
+
+                }
+            };
             /**
              * ********************************
              * TABLE COLUMN ADDED DYNAMICALLY *
@@ -221,14 +234,16 @@ public class FXMLHomeController implements Initializable {
                 //We are using non property style for making dynamic table
                 final int j = i;
                 TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
+                //col.setCellFactory(TextFieldTableCell.forTableColumn()); //This makes the cells editable.
                 col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
                         return new SimpleStringProperty(param.getValue().get(j).toString());
                     }
                 });
-
+                col.setOnEditCommit(dataEditCommitHandler);
+                col.setEditable(true);
                 reportsTableView.getColumns().addAll(col);
-                System.out.println("Column [" + i + "] ");
+                System.out.println("Column [" + i + "] "); //TODO temp
             }
 
             /**
@@ -243,21 +258,98 @@ public class FXMLHomeController implements Initializable {
                     //Iterate Column
                     row.add(rs.getString(i));
                 }
-                System.out.println("Row [1] added " + row);
+                System.out.println("Row added " + row); //TODO temp
                 data.add(row);
 
             }
 
             //FINALLY ADDED TO TableView
             reportsTableView.setItems(data);
+            reportsTableView.setEditable(true);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
 
-//        TableColumn col = new TableColumn("test column");
-//
-//        reportsTableView.getColumns().add(col);
+    @FXML
+    private void mPopulateDataTable(ActionEvent event){
+        String word = new String(searchWordTextField.getText());
+        wordData = FXCollections.observableArrayList();
+        int maxParts = 0;
+        try {
+            /** Find the Max number of parts for the word being searched **/
+                String queryMaxParts = new String("SELECT max(part_segment_pk2) FROM `word-to-phoneme`.word_parts " +
+                        "INNER JOIN `word-to-phoneme`.word ON (word_id = word_id_pk1) " +
+                        "WHERE word_name = '" + word + "';");
+                ResultSet maxPartsRS = Main.db.sendQuery(queryMaxParts);
+                maxPartsRS.next();
+                maxParts = maxPartsRS.getInt(1);
+                System.out.println("Max Parts: " + maxParts); //TODO temp
+            /** End Find Max Parts **/
+            /** Build Query based on max parts **/
+
+            /** End Build Query based on max parts **/
+            String query = new String("SELECT * FROM `word-to-phoneme`.word " +
+                    "INNER JOIN `word-to-phoneme`.word_parts as setone ON (word_id = setone.word_id_pk1 AND setone.part_segment_pk2=1) " +
+                    "WHERE word_name='" + word + "' " +
+                    "ORDER BY setone.part_segment_pk2;");
+            ResultSet rs = Main.db.sendQuery(query);
+            dataTableView.getColumns().clear();
+            dataTableView.setEditable(true);
+            final EventHandler<TableColumn.CellEditEvent<ObservableList, String>> dataEditCommitHandler = new EventHandler<TableColumn.CellEditEvent<ObservableList, String>>() {
+                @Override
+                public void handle(TableColumn.CellEditEvent<ObservableList, String> event) {
+                    System.out.println("Send query to DB with data currently in the cell");//TODO temp.
+
+                }
+            };
+            /**
+             * ********************************
+             * TABLE COLUMN ADDED DYNAMICALLY *
+             *********************************
+             */
+            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+                //We are using non property style for making dynamic table
+                final int j = i;
+                TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
+                col.setCellFactory(TextFieldTableCell.forTableColumn()); //This makes the cells editable.
+                col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
+                        return new SimpleStringProperty(param.getValue().get(j).toString());
+                    }
+                });
+                col.setOnEditCommit(dataEditCommitHandler);
+                col.setEditable(true);
+                dataTableView.getColumns().addAll(col);
+                System.out.println("Column [" + i + "] "); //TODO temp
+            }
+
+            /**
+             * ******************************
+             * Data added to ObservableList *
+             *******************************
+             */
+            while (rs.next()) {
+                //Iterate Row
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    //Iterate Column
+                    row.add(rs.getString(i));
+                }
+                System.out.println("Row added " + row); //TODO temp
+                wordData.add(row);
+
+            }
+
+            //FINALLY ADDED TO TableView
+            dataTableView.setItems(wordData);
+            dataTableView.setEditable(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

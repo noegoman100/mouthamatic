@@ -33,7 +33,14 @@
             </Tab>
           <Tab text="Data  I/O">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="dataTableView" layoutX="27.0" layoutY="129.0" prefHeight="75.0" prefWidth="1132.0" />
+                        <Button layoutX="27.0" layoutY="30.0" mnemonicParsing="false" text="Add New Word" />
+                        <Button layoutX="1107.0" layoutY="87.0" mnemonicParsing="false" onAction="#mPopulateDataTable" text="Search" />
+                        <TextField fx:id="searchWordTextField" layoutX="870.0" layoutY="87.0" prefHeight="25.0" prefWidth="226.0" promptText="Enter Search Word" />
+                        <Button layoutX="27.0" layoutY="229.0" mnemonicParsing="false" text="Delete Word" />
+                     </children></AnchorPane>
             </content>
           </Tab>
           <Tab text="Reports">
