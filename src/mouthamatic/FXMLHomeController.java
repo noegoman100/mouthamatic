@@ -311,9 +311,37 @@ public class FXMLHomeController implements Initializable {
             dataTableView.setEditable(true);
             final EventHandler<TableColumn.CellEditEvent<ObservableList, String>> dataEditCommitHandler = new EventHandler<TableColumn.CellEditEvent<ObservableList, String>>() {
                 @Override
-                public void handle(TableColumn.CellEditEvent<ObservableList, String> event) {
-                    System.out.println("Send query to DB with data currently in the cell");//TODO temp. How do I save the edit??
-                    //TODO try printing out the value currently in the cell
+                public void handle(TableColumn.CellEditEvent<ObservableList, String> editEvent) {
+                    System.out.println("Send query to DB with data currently in the cell");//TODO temp.
+                    System.out.println("event.getNewValue(): " + editEvent.getNewValue()); //TODO temp.
+                    System.out.println("event.getTablePosition().getColumn(): " + editEvent.getTablePosition().getColumn()); //TODO temp.
+                    System.out.println("event.getTableColumn().getText(): " + editEvent.getTableColumn().getText()); //TODO temp.
+                    /** Send out update query **/
+                    //TODO get word_id from word table using
+                    /** Get word_id value from word name in tableView **/
+                        System.out.println("event.getRowValue().get(0): " + editEvent.getRowValue().get(0)); //TODO temp
+                        int word_id = 0;
+                        ResultSet rs = Main.db.sendQuery("SELECT word_id FROM `word-to-phoneme`.word WHERE word_name = '" + editEvent.getRowValue().get(0) + "';");
+                        while (true){
+                            try {
+                                if (!rs.next()) break;
+                                word_id = rs.getInt(1);
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+                            System.out.println("word_id: " + word_id); //TODO temp
+                        }
+                    /** End Get word_id value from word name in tableView **/
+                    /** With word_id, and part_segment_pk2 (column index), a specific item can be updated**/
+                        String updateQuery = new String("UPDATE " +
+                                "`word-to-phoneme`.word_parts " +
+                                "SET symbol_id_fk = " + editEvent.getNewValue() +
+                                " WHERE word_id_pk1 = " + word_id +
+                                " AND part_segment_pk2 = " + editEvent.getTablePosition().getColumn() + ";");
+                        Main.db.sendUpdate(updateQuery);
+                        //TODO refresh data in the table.
+                        mPopulateDataTable(event);//Refresh the table.
+                    /** End With word_id, and part_segment_pk2 (column index), a specific items can be updated**/
                 }
             };
             /**
@@ -324,7 +352,7 @@ public class FXMLHomeController implements Initializable {
             for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
                 //We are using non property style for making dynamic table
                 final int j = i;
-                TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
+                TableColumn col = new TableColumn(rs.getMetaData().getColumnLabel(i + 1));
                 col.setCellFactory(TextFieldTableCell.forTableColumn()); //This makes the cells editable.
                 col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
