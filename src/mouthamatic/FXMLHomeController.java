@@ -40,36 +40,28 @@ import javafx.util.Callback;
  */
 public class FXMLHomeController implements Initializable {
 
-    @FXML
-    private TextField sentenceTextField;
-    @FXML
-    private TextField outputDestTextField;
-    @FXML
-    private TextField imagesPerSymbolTextField;
-    @FXML
-    private ScrollPane imageScrollPane;
-    @FXML
-    private ComboBox mouthPairComboBox;
-    @FXML
-    private ListView queryListView;
-    @FXML
-    private TableView reportsTableView;
-    @FXML
-    private TableView dataTableView;
-    @FXML
-    private TextField searchWordTextField;
-
-    private ObservableList<ObservableList> data;
-    private ObservableList<ObservableList> wordData;
-    private SentenceData sentenceData;
-
+    @FXML private TextField sentenceTextField;          //GENERATE TAB
+    @FXML private ScrollPane imageScrollPane;           //GENERATE TAB
+    @FXML private ComboBox mouthPairComboBox;           //GENERATE TAB
+    private SentenceData sentenceData;                  //GENERATE TAB
+    @FXML private ListView queryListView;               //REPORTS TAB
+    @FXML private TableView reportsTableView;           //REPORTS TAB
+    @FXML private TextField outputDestTextField;        //EXPORT TAB
+    @FXML private TextField imagesPerSymbolTextField;   //EXPORT TAB
+    @FXML private TableView dataTableView;              //DATA TAB
+    @FXML private TextField dataSearchWordTextField;    //DATA TAB
+    private ObservableList<ObservableList> data;        //DATA TAB
+    private ObservableList<ObservableList> wordData;    //DATA TAB
+    @FXML private ComboBox dataMouthSetChoiceComboBox;  //DATA TAB
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         mInitializeGenerateView();
         mInitializeReportsView();
+        mInitializeDataView();
     }    
-    
+
+    //GENERATE TAB
     @FXML
     private void generateButtonAction(ActionEvent event) {
 
@@ -84,6 +76,7 @@ public class FXMLHomeController implements Initializable {
         mAddImagesToScrollPane(sentenceData, imageScrollPane);
     }
 
+    //GENERATE TAB
     private void mAddImagesToScrollPane(SentenceData sentenceData, ScrollPane scrollPane) {
     HBox imageHBox = new HBox();
     //Image image = new Image()
@@ -107,11 +100,29 @@ public class FXMLHomeController implements Initializable {
 
 }
 
+    //GENERATE TAB
     private int mGetMouthPairId(){
         int index = mouthPairComboBox.getSelectionModel().getSelectedIndex() + 1; //The +1 is needed to start the list at 1, not 0.
         return index;
     }
 
+    //GENERATE TAB
+    private void mInitializeGenerateView(){
+        List<String> choicesArray = new ArrayList<>();
+        ResultSet rs = Main.db.sendQuery("SELECT mouth_pair_name FROM `word-to-phoneme`.mouth_pair_type ORDER BY mouth_pair_type_id ASC;");
+        while (true){
+            try {
+                if (!rs.next()) break;
+                choicesArray.add(rs.getString(1));
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        }
+        mouthPairComboBox.setItems(FXCollections.observableList(choicesArray));
+    }
+
+    //EXPORT TAB
     @FXML
     private void mExportImages(ActionEvent event){
         int imagesPerSymbol =  Integer.parseInt(imagesPerSymbolTextField.getText());
@@ -139,24 +150,7 @@ public class FXMLHomeController implements Initializable {
 
     }
 
-    private void mInitializeGenerateView(){
-        List<String> choicesArray = new ArrayList<>();
-        ResultSet rs = Main.db.sendQuery("SELECT mouth_pair_name FROM `word-to-phoneme`.mouth_pair_type ORDER BY mouth_pair_type_id ASC;");
-        while (true){
-            try {
-                if (!rs.next()) break;
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            try {
-                choicesArray.add(rs.getString(1));
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-        mouthPairComboBox.setItems(FXCollections.observableList(choicesArray));
-    }
-
+    //REPORTS TAB
     private void mInitializeReportsView() {
         ResultSet rs = null;
         try {
@@ -189,6 +183,7 @@ public class FXMLHomeController implements Initializable {
         });
     }
 
+    //REPORTS TAB
     private void mPopulateReportsTable(String selectionName){
 
         data = FXCollections.observableArrayList();
@@ -213,6 +208,7 @@ public class FXMLHomeController implements Initializable {
 
     }
 
+    //REPORTS TAB Essentially an extension of the mPopulateReportsTable method.
     private void mSendQueryToTable(String query){ //this method From: https://blog.ngopal.com.np/2011/10/19/dyanmic-tableview-data-from-database/
         try {
             ResultSet rs = Main.db.sendQuery(query);
@@ -273,9 +269,10 @@ public class FXMLHomeController implements Initializable {
 
     }
 
+    //DATA TAB
     @FXML
     private void mPopulateDataTable(ActionEvent event){
-        String word = new String(searchWordTextField.getText());
+        String word = new String(dataSearchWordTextField.getText());
         wordData = FXCollections.observableArrayList();
         int maxParts = 0;
         try {
@@ -390,5 +387,22 @@ public class FXMLHomeController implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+    //DATA TAB
+    @FXML
+    private void mInitializeDataView(){
+        List<String> choicesArray = new ArrayList<>();
+        ResultSet rs = Main.db.sendQuery("SELECT mouth_pair_name FROM `word-to-phoneme`.mouth_pair_type ORDER BY mouth_pair_type_id ASC;");
+        while (true){
+            try {
+                if (!rs.next()) break;
+                choicesArray.add(rs.getString(1));
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        }
+        dataMouthSetChoiceComboBox.setItems(FXCollections.observableList(choicesArray));
     }
 }
