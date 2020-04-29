@@ -279,30 +279,41 @@ public class FXMLHomeController implements Initializable {
         wordData = FXCollections.observableArrayList();
         int maxParts = 0;
         try {
-            /** Find the Max number of parts for the word being searched **/
+            /**** Find the Max number of parts for the word being searched **/
                 String queryMaxParts = new String("SELECT max(part_segment_pk2) FROM `word-to-phoneme`.word_parts " +
                         "INNER JOIN `word-to-phoneme`.word ON (word_id = word_id_pk1) " +
                         "WHERE word_name = '" + word + "';");
                 ResultSet maxPartsRS = Main.db.sendQuery(queryMaxParts);
-                maxPartsRS.next();
+                maxPartsRS.next(); //TODO if the word is not there (or too long) an error occurs
                 maxParts = maxPartsRS.getInt(1);
                 System.out.println("Max Parts: " + maxParts); //TODO temp
-            /** End Find Max Parts **/
-            /** Build Query based on max parts **/
+                if (maxParts == 0) return;
+            /**** End Find Max Parts **/
+            /**** Build Query based on maxParts count **/
+                String queryAllParts = new String("SELECT word_name AS Word, ");
+                for (int i = 0; i < maxParts; i++){
+                    queryAllParts = queryAllParts + "set" + (i+1) + ".symbol_id_fk AS Symbol" + (i+1);
+                    if (i < maxParts -1){
+                        queryAllParts = queryAllParts + ", ";
+                    }
+                }
+                queryAllParts = queryAllParts + " " + "FROM `word-to-phoneme`.word ";
+                for (int i = 0; i < maxParts; i++){
+                    queryAllParts = queryAllParts + "INNER JOIN `word-to-phoneme`.word_parts AS set" + (i+1) + " ON (word_id = set" + (i+1) + ".word_id_pk1 AND "
+                    + "set" + (i+1) + ".part_segment_pk2=" + (i+1) + ") ";
+                }
+                queryAllParts = queryAllParts + "WHERE word_name='" + word + "'; ";
 
-            /** End Build Query based on max parts **/
-            String query = new String("SELECT * FROM `word-to-phoneme`.word " +
-                    "INNER JOIN `word-to-phoneme`.word_parts as setone ON (word_id = setone.word_id_pk1 AND setone.part_segment_pk2=1) " +
-                    "WHERE word_name='" + word + "' " +
-                    "ORDER BY setone.part_segment_pk2;");
-            ResultSet rs = Main.db.sendQuery(query);
+                System.out.println("queryAllParts: " + queryAllParts); //TODO temp
+            /**** End Build Query based on max parts **/
+            ResultSet rs = Main.db.sendQuery(queryAllParts);
             dataTableView.getColumns().clear();
             dataTableView.setEditable(true);
             final EventHandler<TableColumn.CellEditEvent<ObservableList, String>> dataEditCommitHandler = new EventHandler<TableColumn.CellEditEvent<ObservableList, String>>() {
                 @Override
                 public void handle(TableColumn.CellEditEvent<ObservableList, String> event) {
-                    System.out.println("Send query to DB with data currently in the cell");//TODO temp.
-
+                    System.out.println("Send query to DB with data currently in the cell");//TODO temp. How do I save the edit??
+                    //TODO try printing out the value currently in the cell
                 }
             };
             /**
