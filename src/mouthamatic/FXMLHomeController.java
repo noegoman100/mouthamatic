@@ -405,4 +405,26 @@ public class FXMLHomeController implements Initializable {
         }
         dataMouthSetChoiceComboBox.setItems(FXCollections.observableList(choicesArray));
     }
+
+    //DATA TAB
+    @FXML
+    private void mLoadReferenceImages(ActionEvent event){
+        System.out.println("Reference Combo Box Action");//TODO Temp
+        int selectedItemIndex = dataMouthSetChoiceComboBox.getSelectionModel().getSelectedIndex();
+        String selectedName = new String(dataMouthSetChoiceComboBox.getItems().get(selectedItemIndex).toString());
+        System.out.println("selectedName: " + selectedName); //TODO Temp
+        //TODO get mouth_pair_id from DB based on the selected Name
+        String mouthPairTypeIdQuery = new String("SELECT mouth_pair_type_id FROM `word-to-phoneme`.mouth_pair_type WHERE mouth_pair_name = '" + selectedName + "' LIMIT 1;");
+        ResultSet rs = Main.db.sendQuery(mouthPairTypeIdQuery);
+        int mouthPairTypeId = 0;
+        try {
+            rs.next(); //Get past empty row
+            mouthPairTypeId = rs.getInt(1);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        System.out.println("mouthPairTypeId: " + mouthPairTypeId);
+        //TODO Query to get All Symbols and Their Selected Mouth Counterparts
+
+    }
 }
