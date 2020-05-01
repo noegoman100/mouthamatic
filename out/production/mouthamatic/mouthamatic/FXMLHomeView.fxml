@@ -40,7 +40,7 @@
                         <Button layoutX="1107.0" layoutY="87.0" mnemonicParsing="false" onAction="#mPopulateDataTable" text="Search" />
                         <TextField fx:id="dataSearchWordTextField" layoutX="870.0" layoutY="87.0" prefHeight="25.0" prefWidth="226.0" promptText="Enter Search Word" />
                         <Button layoutX="1076.0" layoutY="220.0" mnemonicParsing="false" text="Delete Word" />
-                        <ScrollPane layoutX="16.0" layoutY="319.0" prefHeight="421.0" prefWidth="1155.0">
+                        <ScrollPane fx:id="referenceScrollPane" layoutX="253.0" layoutY="319.0" prefHeight="421.0" prefWidth="667.0">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
                           </content>

@@ -5,6 +5,7 @@
  */
 package mouthamatic;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +28,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -53,6 +55,7 @@ public class FXMLHomeController implements Initializable {
     private ObservableList<ObservableList> data;        //DATA TAB
     private ObservableList<ObservableList> wordData;    //DATA TAB
     @FXML private ComboBox dataMouthSetChoiceComboBox;  //DATA TAB
+    @FXML private ScrollPane referenceScrollPane;       //DATA TAB
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -425,6 +428,40 @@ public class FXMLHomeController implements Initializable {
         }
         System.out.println("mouthPairTypeId: " + mouthPairTypeId);
         //TODO Query to get All Symbols and Their Selected Mouth Counterparts
+        //SELECT symbol, symbol_id_pk2, image_url FROM `word-to-phoneme`.symbols INNER JOIN `word-to-phoneme`.image_map ON (symbols_id = symbol_id_pk2) WHERE mouth_pair_id_pk1 = 4 ORDER BY symbol;
+        String referenceQuery = new String("SELECT symbol, symbol_id_pk2, image_url FROM `word-to-phoneme`.symbols INNER JOIN `word-to-phoneme`.image_map ON (symbols_id = symbol_id_pk2) WHERE mouth_pair_id_pk1 = " + mouthPairTypeId + " ORDER BY symbol;");
+        ResultSet referenceImagesRs = Main.db.sendQuery(referenceQuery);
+        String symbolName =  new String();
+        int symbolId = 0;
+        String imageFileName = new String();
+        VBox vBox = new VBox();
+        while(true){
+            try {
+                if (!referenceImagesRs.next()) break;
+                HBox tempHbox = new HBox();
+                symbolName = referenceImagesRs.getString(1);
+                symbolId = referenceImagesRs.getInt(2);
+                imageFileName = referenceImagesRs.getString(3);
+                TextField symbolNameTextField = new TextField(symbolName);
+                TextField symbolIdTextField = new TextField(Integer.toString(symbolId));
+                String filePath = "resources\\mouth_image_sets\\" + imageFileName;
+                FileInputStream inputStream = null;
+                try {
+                    inputStream = new FileInputStream(filePath);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Image image = new Image(inputStream);
+                ImageView imageView = new ImageView(image);
+                tempHbox.getChildren().addAll(symbolNameTextField, symbolIdTextField, imageView);
+                vBox.getChildren().add(tempHbox);
+                System.out.println("Beep");
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        }
+        referenceScrollPane.setContent(vBox);
 
     }
 }
