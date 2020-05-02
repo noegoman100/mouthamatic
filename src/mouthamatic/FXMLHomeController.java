@@ -27,6 +27,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,26 +43,30 @@ import javafx.util.Callback;
  */
 public class FXMLHomeController implements Initializable {
 
-    @FXML private TextField sentenceTextField;          //GENERATE TAB
-    @FXML private ScrollPane imageScrollPane;           //GENERATE TAB
-    @FXML private ComboBox mouthPairComboBox;           //GENERATE TAB
-    private SentenceData sentenceData;                  //GENERATE TAB
-    @FXML private ListView queryListView;               //REPORTS TAB
-    @FXML private TableView reportsTableView;           //REPORTS TAB
-    @FXML private TextField outputDestTextField;        //EXPORT TAB
-    @FXML private TextField imagesPerSymbolTextField;   //EXPORT TAB
-    @FXML private TableView dataTableView;              //DATA TAB
-    @FXML private TextField dataSearchWordTextField;    //DATA TAB
-    private ObservableList<ObservableList> data;        //DATA TAB
-    private ObservableList<ObservableList> wordData;    //DATA TAB
-    @FXML private ComboBox dataMouthSetChoiceComboBox;  //DATA TAB
-    @FXML private ScrollPane referenceScrollPane;       //DATA TAB
+    @FXML private TextField sentenceTextField;                  //GENERATE TAB
+    @FXML private ScrollPane imageScrollPane;                   //GENERATE TAB
+    @FXML private ComboBox mouthPairComboBox;                   //GENERATE TAB
+    private SentenceData sentenceData;                          //GENERATE TAB
+    @FXML private ListView queryListView;                       //REPORTS TAB
+    @FXML private TableView reportsTableView;                   //REPORTS TAB
+    @FXML private TextField outputDestTextField;                //EXPORT TAB
+    @FXML private TextField imagesPerSymbolTextField;           //EXPORT TAB
+    @FXML private TableView dataTableView;                      //DATA TAB
+    @FXML private TextField dataSearchWordTextField;            //DATA TAB
+    private ObservableList<ObservableList> data;                //DATA TAB
+    private ObservableList<ObservableList> wordData;            //DATA TAB
+    @FXML private ComboBox dataMouthSetChoiceComboBox;          //DATA TAB
+    @FXML private ScrollPane referenceScrollPane;               //DATA TAB
+    @FXML private TableView referenceChartTableView;            //DATA TAB
+    private ObservableList<ObservableList> referenceListData;   //DATA TAB
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         mInitializeGenerateView();
         mInitializeReportsView();
         mInitializeDataView();
+        mLoadSymbolReferenceChart();
     }    
 
     //GENERATE TAB
@@ -346,7 +351,7 @@ public class FXMLHomeController implements Initializable {
             };
             /**
              * ********************************
-             * TABLE COLUMN ADDED DYNAMICALLY *
+             * TABLE COLUMNS ADDED DYNAMICALLY *
              *********************************
              */
             for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
@@ -412,10 +417,8 @@ public class FXMLHomeController implements Initializable {
     //DATA TAB
     @FXML
     private void mLoadReferenceImages(ActionEvent event){
-        System.out.println("Reference Combo Box Action");//TODO Temp
         int selectedItemIndex = dataMouthSetChoiceComboBox.getSelectionModel().getSelectedIndex();
         String selectedName = new String(dataMouthSetChoiceComboBox.getItems().get(selectedItemIndex).toString());
-        System.out.println("selectedName: " + selectedName); //TODO Temp
         //TODO get mouth_pair_id from DB based on the selected Name
         String mouthPairTypeIdQuery = new String("SELECT mouth_pair_type_id FROM `word-to-phoneme`.mouth_pair_type WHERE mouth_pair_name = '" + selectedName + "' LIMIT 1;");
         ResultSet rs = Main.db.sendQuery(mouthPairTypeIdQuery);
@@ -427,14 +430,13 @@ public class FXMLHomeController implements Initializable {
             throwables.printStackTrace();
         }
         System.out.println("mouthPairTypeId: " + mouthPairTypeId);
-        //TODO Query to get All Symbols and Their Selected Mouth Counterparts
-        //SELECT symbol, symbol_id_pk2, image_url FROM `word-to-phoneme`.symbols INNER JOIN `word-to-phoneme`.image_map ON (symbols_id = symbol_id_pk2) WHERE mouth_pair_id_pk1 = 4 ORDER BY symbol;
         String referenceQuery = new String("SELECT symbol, symbol_id_pk2, image_url FROM `word-to-phoneme`.symbols INNER JOIN `word-to-phoneme`.image_map ON (symbols_id = symbol_id_pk2) WHERE mouth_pair_id_pk1 = " + mouthPairTypeId + " ORDER BY symbol;");
         ResultSet referenceImagesRs = Main.db.sendQuery(referenceQuery);
         String symbolName =  new String();
         int symbolId = 0;
         String imageFileName = new String();
         VBox vBox = new VBox();
+        /** Load up an HBox, then place it inside a VBox. Add the VBox to the ScrollPane **/
         while(true){
             try {
                 if (!referenceImagesRs.next()) break;
@@ -455,13 +457,71 @@ public class FXMLHomeController implements Initializable {
                 ImageView imageView = new ImageView(image);
                 tempHbox.getChildren().addAll(symbolNameTextField, symbolIdTextField, imageView);
                 vBox.getChildren().add(tempHbox);
-                System.out.println("Beep");
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
 
         }
         referenceScrollPane.setContent(vBox);
+
+    }
+
+    //DATA TAB
+    @FXML
+    private void mLoadSymbolReferenceChart(){
+        //TODO load the reference chart. TableView?
+        String query = new String("SELECT symbol, symbol_id_fk, word_name FROM `word-to-phoneme`.word INNER JOIN `word-to-phoneme`.word_parts ON (word_id = word_id_pk1) INNER JOIN `word-to-phoneme`.symbols ON (symbols_id = symbol_id_fk) GROUP BY symbol ORDER BY symbol, part_segment_pk2;");
+        referenceListData = FXCollections.observableArrayList();
+        ResultSet rsChart = Main.db.sendQuery(query);
+        referenceChartTableView.getColumns().clear();
+
+        /**
+         * ********************************
+         * TABLE COLUMNS ADDED DYNAMICALLY *
+         *********************************
+         */
+        try {
+            for (int i = 0; i < rsChart.getMetaData().getColumnCount(); i++) {
+                //We are using non property style for making dynamic table
+                final int j = i;
+                TableColumn col = new TableColumn(rsChart.getMetaData().getColumnLabel(i + 1));
+                col.setCellFactory(TextFieldTableCell.forTableColumn()); //This makes the cells editable.
+                col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
+                        return new SimpleStringProperty(param.getValue().get(j).toString());
+                    }
+                });
+                referenceChartTableView.getColumns().addAll(col);
+                System.out.println("Column [" + i + "] "); //TODO temp
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        /**
+         * ******************************
+         * Data added to ObservableList *
+         *******************************
+         */
+        try {
+            while (rsChart.next()) {
+                //Iterate Row
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for (int i = 1; i <= rsChart.getMetaData().getColumnCount(); i++) {
+                    //Iterate Column
+                    row.add(rsChart.getString(i));
+                }
+                System.out.println("Row added for Reference Chart: " + row); //TODO temp
+                referenceListData.add(row);
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        //FINALLY ADDED TO TableView
+        referenceChartTableView.setItems(referenceListData);
+
 
     }
 }
