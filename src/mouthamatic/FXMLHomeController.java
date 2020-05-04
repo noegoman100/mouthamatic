@@ -184,7 +184,6 @@ public class FXMLHomeController implements Initializable {
 
             @Override
             public void handle(MouseEvent event) {
-                System.out.println("Item clicked at location: " + queryListView.getSelectionModel().getSelectedIndex());//TODO temp
                 mPopulateReportsTable(queryListView.getSelectionModel().getSelectedItem().toString());
             }
 
@@ -195,7 +194,6 @@ public class FXMLHomeController implements Initializable {
     private void mPopulateReportsTable(String selectionName){
 
         data = FXCollections.observableArrayList();
-        System.out.println(selectionName); //TODO Temp
         ResultSet rsSelection = Main.db.sendQuery("SELECT report_query_string FROM `word-to-phoneme`.report_query "
                 + "WHERE report_query_name = '" + selectionName + "' "
                 + "ORDER BY report_query_name DESC LIMIT 1; ");
@@ -210,7 +208,6 @@ public class FXMLHomeController implements Initializable {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        System.out.println(selectedQuery);//TODO Temp
         //Now!! We can send out the desired Query, then load the results into a dynamic table.
         mSendQueryToTable(selectedQuery);
 
@@ -247,7 +244,6 @@ public class FXMLHomeController implements Initializable {
                 col.setOnEditCommit(dataEditCommitHandler);
                 col.setEditable(true);
                 reportsTableView.getColumns().addAll(col);
-                System.out.println("Column [" + i + "] "); //TODO temp
             }
 
             /**
@@ -262,7 +258,6 @@ public class FXMLHomeController implements Initializable {
                     //Iterate Column
                     row.add(rs.getString(i));
                 }
-                System.out.println("Row added " + row); //TODO temp
                 data.add(row);
 
             }
@@ -291,7 +286,6 @@ public class FXMLHomeController implements Initializable {
                 ResultSet maxPartsRS = Main.db.sendQuery(queryMaxParts);
                 maxPartsRS.next(); //TODO if the word is not there (or too long) an error occurs
                 maxParts = maxPartsRS.getInt(1);
-                System.out.println("Max Parts: " + maxParts); //TODO temp
                 if (maxParts == 0) return;
             /**** End Find Max Parts **/
             /**** Build Query based on maxParts count **/
@@ -309,7 +303,6 @@ public class FXMLHomeController implements Initializable {
                 }
                 queryAllParts = queryAllParts + "WHERE word_name='" + word + "'; ";
 
-                System.out.println("queryAllParts: " + queryAllParts); //TODO temp
             /**** End Build Query based on max parts **/
             ResultSet rs = Main.db.sendQuery(queryAllParts);
             dataTableView.getColumns().clear();
@@ -317,14 +310,8 @@ public class FXMLHomeController implements Initializable {
             final EventHandler<TableColumn.CellEditEvent<ObservableList, String>> dataEditCommitHandler = new EventHandler<TableColumn.CellEditEvent<ObservableList, String>>() {
                 @Override
                 public void handle(TableColumn.CellEditEvent<ObservableList, String> editEvent) {
-                    System.out.println("Send query to DB with data currently in the cell");//TODO temp.
-                    System.out.println("event.getNewValue(): " + editEvent.getNewValue()); //TODO temp.
-                    System.out.println("event.getTablePosition().getColumn(): " + editEvent.getTablePosition().getColumn()); //TODO temp.
-                    System.out.println("event.getTableColumn().getText(): " + editEvent.getTableColumn().getText()); //TODO temp.
-                    /** Send out update query **/
-                    //TODO get word_id from word table using
+
                     /** Get word_id value from word name in tableView **/
-                        System.out.println("event.getRowValue().get(0): " + editEvent.getRowValue().get(0)); //TODO temp
                         int word_id = 0;
                         ResultSet rs = Main.db.sendQuery("SELECT word_id FROM `word-to-phoneme`.word WHERE word_name = '" + editEvent.getRowValue().get(0) + "';");
                         while (true){
@@ -334,7 +321,6 @@ public class FXMLHomeController implements Initializable {
                             } catch (SQLException throwables) {
                                 throwables.printStackTrace();
                             }
-                            System.out.println("word_id: " + word_id); //TODO temp
                         }
                     /** End Get word_id value from word name in tableView **/
                     /** With word_id, and part_segment_pk2 (column index), a specific item can be updated**/
@@ -344,7 +330,6 @@ public class FXMLHomeController implements Initializable {
                                 " WHERE word_id_pk1 = " + word_id +
                                 " AND part_segment_pk2 = " + editEvent.getTablePosition().getColumn() + ";");
                         Main.db.sendUpdate(updateQuery);
-                        //TODO refresh data in the table.
                         mPopulateDataTable(event);//Refresh the table.
                     /** End With word_id, and part_segment_pk2 (column index), a specific items can be updated**/
                 }
@@ -367,7 +352,6 @@ public class FXMLHomeController implements Initializable {
                 col.setOnEditCommit(dataEditCommitHandler);
                 col.setEditable(true);
                 dataTableView.getColumns().addAll(col);
-                System.out.println("Column [" + i + "] "); //TODO temp
             }
 
             /**
@@ -382,7 +366,6 @@ public class FXMLHomeController implements Initializable {
                     //Iterate Column
                     row.add(rs.getString(i));
                 }
-                System.out.println("Row added " + row); //TODO temp
                 wordData.add(row);
 
             }
@@ -419,7 +402,6 @@ public class FXMLHomeController implements Initializable {
     private void mLoadReferenceImages(ActionEvent event){
         int selectedItemIndex = dataMouthSetChoiceComboBox.getSelectionModel().getSelectedIndex();
         String selectedName = new String(dataMouthSetChoiceComboBox.getItems().get(selectedItemIndex).toString());
-        //TODO get mouth_pair_id from DB based on the selected Name
         String mouthPairTypeIdQuery = new String("SELECT mouth_pair_type_id FROM `word-to-phoneme`.mouth_pair_type WHERE mouth_pair_name = '" + selectedName + "' LIMIT 1;");
         ResultSet rs = Main.db.sendQuery(mouthPairTypeIdQuery);
         int mouthPairTypeId = 0;
@@ -469,7 +451,6 @@ public class FXMLHomeController implements Initializable {
     //DATA TAB
     @FXML
     private void mLoadSymbolReferenceChart(){
-        //TODO load the reference chart. TableView?
         String query = new String("SELECT symbol, symbol_id_fk, word_name FROM `word-to-phoneme`.word INNER JOIN `word-to-phoneme`.word_parts ON (word_id = word_id_pk1) INNER JOIN `word-to-phoneme`.symbols ON (symbols_id = symbol_id_fk) GROUP BY symbol ORDER BY symbol, part_segment_pk2;");
         referenceListData = FXCollections.observableArrayList();
         ResultSet rsChart = Main.db.sendQuery(query);
@@ -492,7 +473,6 @@ public class FXMLHomeController implements Initializable {
                     }
                 });
                 referenceChartTableView.getColumns().addAll(col);
-                System.out.println("Column [" + i + "] "); //TODO temp
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -511,7 +491,6 @@ public class FXMLHomeController implements Initializable {
                     //Iterate Column
                     row.add(rsChart.getString(i));
                 }
-                System.out.println("Row added for Reference Chart: " + row); //TODO temp
                 referenceListData.add(row);
 
             }
