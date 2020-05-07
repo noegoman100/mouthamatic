@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -63,15 +64,15 @@ public class FXMLHomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        mInitializeGenerateView();
+        mInitializeGenerateTab();
         mInitializeReportsView();
-        mInitializeDataView();
+        mInitializeDataTab();
         mLoadSymbolReferenceChart();
     }    
 
     //GENERATE TAB
     @FXML
-    private void generateButtonAction(ActionEvent event) {
+    private void generateButtonAction() {
 
         System.out.println("*********** Start Data Transformation ***********");
         sentenceData = new SentenceData(sentenceTextField.getText().toUpperCase());
@@ -115,7 +116,7 @@ public class FXMLHomeController implements Initializable {
     }
 
     //GENERATE TAB
-    private void mInitializeGenerateView(){
+    private void mInitializeGenerateTab(){
         List<String> choicesArray = new ArrayList<>();
         ResultSet rs = Main.db.sendQuery("SELECT mouth_pair_name FROM `word-to-phoneme`.mouth_pair_type ORDER BY mouth_pair_type_id ASC;");
         while (true){
@@ -132,7 +133,7 @@ public class FXMLHomeController implements Initializable {
 
     //EXPORT TAB
     @FXML
-    private void mExportImages(ActionEvent event){
+    private void mExportImages(){
         int imagesPerSymbol =  Integer.parseInt(imagesPerSymbolTextField.getText());
         String outputDest = new String(outputDestTextField.getText()); //TODO Validate Input.
         int fileCounter = 1;
@@ -274,7 +275,7 @@ public class FXMLHomeController implements Initializable {
 
     //DATA TAB
     @FXML
-    private void mPopulateDataTable(ActionEvent event){
+    private void mWordSearchButton(){
         String word = new String(dataSearchWordTextField.getText());
         wordData = FXCollections.observableArrayList();
         int maxParts = 0;
@@ -323,14 +324,29 @@ public class FXMLHomeController implements Initializable {
                             }
                         }
                     /** End Get word_id value from word name in tableView **/
+                    /** This section Edits the Word in the first column, if the word matches the search value **/
+                    if(editEvent.getOldValue().toUpperCase().equals(dataSearchWordTextField.getText().toUpperCase())) {
+                        System.out.println("I get here");
+                        String updateQuery = new String("UPDATE " +
+                                    "`word-to-phoneme`.word " +
+                                    "SET word_name = '" + editEvent.getNewValue() + "' " +
+                                    "WHERE word_id = " + word_id + ";"
+                                );
+                        System.out.println(updateQuery);
+                        Main.db.sendUpdate(updateQuery);
+                        mWordSearchButton();//Refresh the table.
+                    }
+                    /** END This section Edits the Word in the first column, if the word matches the search value **/
                     /** With word_id, and part_segment_pk2 (column index), a specific item can be updated**/
+                    else if (word_id != 0) {
                         String updateQuery = new String("UPDATE " +
                                 "`word-to-phoneme`.word_parts " +
                                 "SET symbol_id_fk = " + editEvent.getNewValue() +
                                 " WHERE word_id_pk1 = " + word_id +
                                 " AND part_segment_pk2 = " + editEvent.getTablePosition().getColumn() + ";");
                         Main.db.sendUpdate(updateQuery);
-                        mPopulateDataTable(event);//Refresh the table.
+                        mWordSearchButton();//Refresh the table.
+                    }
                     /** End With word_id, and part_segment_pk2 (column index), a specific items can be updated**/
                 }
             };
@@ -382,7 +398,8 @@ public class FXMLHomeController implements Initializable {
 
     //DATA TAB
     @FXML
-    private void mInitializeDataView(){
+    private void mInitializeDataTab(){
+        //Populate MouthPairType ComboBox
         List<String> choicesArray = new ArrayList<>();
         ResultSet rs = Main.db.sendQuery("SELECT mouth_pair_name FROM `word-to-phoneme`.mouth_pair_type ORDER BY mouth_pair_type_id ASC;");
         while (true){
@@ -395,11 +412,12 @@ public class FXMLHomeController implements Initializable {
 
         }
         dataMouthSetChoiceComboBox.setItems(FXCollections.observableList(choicesArray));
+        //end Populate MouthPairType ComboBox
     }
 
     //DATA TAB
     @FXML
-    private void mLoadReferenceImages(ActionEvent event){
+    private void mLoadReferenceImages(){
         int selectedItemIndex = dataMouthSetChoiceComboBox.getSelectionModel().getSelectedIndex();
         String selectedName = new String(dataMouthSetChoiceComboBox.getItems().get(selectedItemIndex).toString());
         String mouthPairTypeIdQuery = new String("SELECT mouth_pair_type_id FROM `word-to-phoneme`.mouth_pair_type WHERE mouth_pair_name = '" + selectedName + "' LIMIT 1;");
@@ -451,7 +469,7 @@ public class FXMLHomeController implements Initializable {
     //DATA TAB
     @FXML
     private void mLoadSymbolReferenceChart(){
-        String query = new String("SELECT symbol, symbol_id_fk, word_name FROM `word-to-phoneme`.word INNER JOIN `word-to-phoneme`.word_parts ON (word_id = word_id_pk1) INNER JOIN `word-to-phoneme`.symbols ON (symbols_id = symbol_id_fk) GROUP BY symbol ORDER BY symbol, part_segment_pk2;");
+        String query = new String("SELECT symbol AS 'Symbol', symbol_id_fk AS 'Symbol ID', word_name AS 'Example Word' FROM `word-to-phoneme`.word INNER JOIN `word-to-phoneme`.word_parts ON (word_id = word_id_pk1) INNER JOIN `word-to-phoneme`.symbols ON (symbols_id = symbol_id_fk) GROUP BY symbol ORDER BY symbol, part_segment_pk2;");
         referenceListData = FXCollections.observableArrayList();
         ResultSet rsChart = Main.db.sendQuery(query);
         referenceChartTableView.getColumns().clear();
@@ -502,5 +520,27 @@ public class FXMLHomeController implements Initializable {
         referenceChartTableView.setItems(referenceListData);
 
 
+    }
+
+    //DATA TAB
+    @FXML
+    private void mNewWordButton(){
+        int phonemeCount = 0;
+
+        TextInputDialog dialog = new TextInputDialog("5");
+        dialog.setTitle("New Word");
+        dialog.setHeaderText("How many phoneme segments in this new word?");
+        dialog.setContentText("Word Phoneme Segments: ");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            phonemeCount = Integer.parseInt(result.get());
+        }
+        //TODO get next Available word_id
+        //TODO Now, send an Update with a Blank word, and the correct number of parts
+        //TODO Build a query
+        //TODO then send this new word to the search function
+
+        dataSearchWordTextField.setText("testword");
+        mWordSearchButton();
     }
 }
