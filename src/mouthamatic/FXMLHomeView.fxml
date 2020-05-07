@@ -28,6 +28,8 @@
                         </ScrollPane>
                         <ComboBox fx:id="mouthPairComboBox" layoutX="25.0" layoutY="111.0" prefWidth="150.0" />
                         <Label layoutX="25.0" layoutY="151.0" text="(A closed mouth blank is added to the beginning of each word, and at the end of the sentence)" />
+                        <Label layoutX="188.0" layoutY="115.0" text="(Please select an Image Set)" />
+                        <Label layoutX="37.0" layoutY="14.0" text="(Enter a line of dialog from which to generate a phoneme based image sequence)" />
                      </children></AnchorPane>
               </content>
             </Tab>
@@ -50,6 +52,7 @@
                         <Label layoutX="27.0" layoutY="104.0" text="(Each Cell is Editable)" />
                         <Label layoutX="211.0" layoutY="289.0" text="Reference List" />
                         <Label layoutX="586.0" layoutY="289.0" text="Reference Images" />
+                        <Label layoutX="901.0" layoutY="58.0" text="(Enter a word to Edit or Delete)" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -59,12 +62,19 @@
                      <children>
                         <ListView fx:id="queryListView" layoutX="14.0" layoutY="86.0" prefHeight="650.0" prefWidth="200.0" />
                         <TableView fx:id="reportsTableView" layoutX="245.0" layoutY="86.0" prefHeight="651.0" prefWidth="911.0" />
+                        <Label layoutX="15.0" layoutY="61.0" text="(Select a Query to Generate a Report)" />
+                        <Label layoutX="658.0" layoutY="61.0" text="(Report Output)" />
                      </children></AnchorPane>
             </content>
           </Tab>
             <Tab text="Search">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="multiSearchTextField" layoutX="32.0" layoutY="50.0" prefHeight="25.0" prefWidth="360.0" promptText="Enter Full or Partial Word" />
+                        <Button layoutX="420.0" layoutY="50.0" mnemonicParsing="false" onAction="#mMultiSearchButton" text="Multi-Line Search" />
+                        <TableView fx:id="multiSearchTableView" layoutX="32.0" layoutY="107.0" prefHeight="624.0" prefWidth="1121.0" />
+                     </children></AnchorPane>
               </content>
             </Tab>
             <Tab text="Export">
