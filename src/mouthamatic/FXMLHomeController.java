@@ -111,8 +111,21 @@ public class FXMLHomeController implements Initializable {
 
     //GENERATE TAB
     private int mGetMouthPairId(){
-        int index = mouthPairComboBox.getSelectionModel().getSelectedIndex() + 1; //The +1 is needed to start the list at 1, not 0.
-        return index;
+        //Get the MouthPairTypeId from the name selected in the ComboBox.
+        System.out.println(mouthPairComboBox.getSelectionModel().getSelectedItem().toString()); //TODO temp
+        String comboSelectedName = new String(mouthPairComboBox.getSelectionModel().getSelectedItem().toString());
+        ResultSet rs;
+        String query = new String("SELECT mouth_pair_type_id FROM `word-to-phoneme`.mouth_pair_type WHERE mouth_pair_name = '" + comboSelectedName + "' LIMIT 1;");
+        rs = Main.db.sendQuery(query);
+        int mouthPairId = 0;
+        try {
+            rs.next();
+            mouthPairId = rs.getInt(1);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return mouthPairId;
     }
 
     //GENERATE TAB
@@ -532,15 +545,51 @@ public class FXMLHomeController implements Initializable {
         dialog.setHeaderText("How many phoneme segments in this new word?");
         dialog.setContentText("Word Phoneme Segments: ");
         Optional<String> result = dialog.showAndWait();
+        //Check to see if a number was entered into the Phoneme Count Text Field
         if (result.isPresent()){
             phonemeCount = Integer.parseInt(result.get());
-        }
-        //TODO get next Available word_id
-        //TODO Now, send an Update with a Blank word, and the correct number of parts
-        //TODO Build a query
-        //TODO then send this new word to the search function
+            //TODO get next Available word_id
+            ResultSet nextWordIdRS;
+            String nextWordIdQuery = new String("SELECT MAX(word_id) FROM `word-to-phoneme`.word;");
+            nextWordIdRS = Main.db.sendQuery(nextWordIdQuery);
+            int nextAvailableId = 0;
+            try {
+                nextWordIdRS.next();//Get past blank row
+                nextAvailableId = nextWordIdRS.getInt(1);
+                nextAvailableId = nextAvailableId + 1;
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            //TODO Now, send an Update with a Blank word
+            String insertWordQuery = new String("INSERT INTO `word-to-phoneme`.`word` (`word_id`, `word_name`) VALUES ('" + nextAvailableId + "', 'NEWWORD');");
+            System.out.println("updateQuery: " + insertWordQuery);
+            Main.db.sendUpdate(insertWordQuery);
 
-        dataSearchWordTextField.setText("testword");
-        mWordSearchButton();
+            //TODO Build an insert Query with the correct number of parts
+            for(int i = 0; i < phonemeCount; i++) {
+                String insertPartsQuery = new String("INSERT INTO `word-to-phoneme`.`word_parts` (`word_id_pk1`, `part_segment_pk2`, `symbol_id_fk`) VALUES ('" +
+                        nextAvailableId + "', '" + (i+1) +
+                        "', '999');");
+                System.out.println("updateQuery: " + insertPartsQuery);
+                Main.db.sendUpdate(insertPartsQuery);
+            }
+
+            //TODO then send this new word to the search function
+
+            dataSearchWordTextField.setText("NEWWORD");
+            mWordSearchButton();
+        }
+
+
+
+    }
+
+    //DATA TAB
+    @FXML
+    private void mDeleteWordButton(){
+
+        String deleteQuery = new String("DELETE FROM `word-to-phoneme`.word WHERE word_name = '" + dataSearchWordTextField.getText() + "';");
+        System.out.println(deleteQuery);
+        Main.db.sendUpdate(deleteQuery);
     }
 }
