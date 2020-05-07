@@ -300,7 +300,12 @@ public class FXMLHomeController implements Initializable {
                 ResultSet maxPartsRS = Main.db.sendQuery(queryMaxParts);
                 maxPartsRS.next(); //TODO if the word is not there (or too long) an error occurs
                 maxParts = maxPartsRS.getInt(1);
-                if (maxParts == 0) return;
+                //If maxParts == 0 (No word found), then clear the table and the search field
+                if (maxParts == 0) {
+                    dataSearchWordTextField.setText("");
+                    dataTableView.getColumns().clear();
+                    return;
+                }
             /**** End Find Max Parts **/
             /**** Build Query based on maxParts count **/
                 String queryAllParts = new String("SELECT word_name AS Word, ");

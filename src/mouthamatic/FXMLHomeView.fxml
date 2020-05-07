@@ -47,6 +47,9 @@
                         </ScrollPane>
                         <ComboBox fx:id="dataMouthSetChoiceComboBox" layoutX="756.0" layoutY="285.0" onAction="#mLoadReferenceImages" prefWidth="150.0" />
                         <TableView fx:id="referenceChartTableView" layoutX="27.0" layoutY="319.0" prefHeight="420.0" prefWidth="441.0" />
+                        <Label layoutX="27.0" layoutY="104.0" text="(Each Cell is Editable)" />
+                        <Label layoutX="211.0" layoutY="289.0" text="Reference List" />
+                        <Label layoutX="586.0" layoutY="289.0" text="Reference Images" />
                      </children></AnchorPane>
             </content>
           </Tab>
