@@ -5,6 +5,7 @@
  */
 package mouthamatic;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -144,34 +145,6 @@ public class FXMLHomeController implements Initializable {
 
         }
         mouthPairComboBox.setItems(FXCollections.observableList(choicesArray));
-    }
-
-    //EXPORT TAB
-    @FXML
-    private void mExportImages(){
-        int imagesPerSymbol =  Integer.parseInt(imagesPerSymbolTextField.getText());
-        String outputDest = new String(outputDestTextField.getText()); //TODO Validate Input.
-        int fileCounter = 1;
-        try {
-            for (int i = 0; i < sentenceData.getParsedImageSequence().size(); i++){
-                for (int j = 0; j < imagesPerSymbol; j++) {
-                    Path source = Paths.get("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mouth_Image_Sets\\"
-                            + sentenceData.getParsedImageSequence().get(i));
-                    Path destination = Paths.get("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\TestSequence\\"
-                            + fileCounter + "_"
-                            + sentenceData.getParsedImageSequence().get(i));
-
-                    Files.copy(source, destination);
-                    fileCounter++;
-
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     //REPORTS TAB
@@ -650,7 +623,7 @@ public class FXMLHomeController implements Initializable {
                 //We are using non property style for making dynamic table
                 final int j = i;
                 TableColumn col = new TableColumn(rs.getMetaData().getColumnLabel(i + 1));
-                col.setCellFactory(TextFieldTableCell.forTableColumn()); //This makes the cells editable.
+                //col.setCellFactory(TextFieldTableCell.forTableColumn()); //This makes the cells editable.
                 col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
                         //Add a check for Null Values
@@ -687,11 +660,47 @@ public class FXMLHomeController implements Initializable {
 
             //FINALLY ADDED TO TableView
             multiSearchTableView.setItems(wordData);
-            multiSearchTableView.setEditable(true);
+            //multiSearchTableView.setEditable(true);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+
+    //EXPORT TAB
+    @FXML
+    private void mExportImages(){
+        int imagesPerSymbol =  Integer.parseInt(imagesPerSymbolTextField.getText());
+        String outputDest = new String(outputDestTextField.getText()); //TODO Validate Input.
+        int fileCounter = 1;
+        try {
+            for (int i = 0; i < sentenceData.getParsedImageSequence().size(); i++){
+                for (int j = 0; j < imagesPerSymbol; j++) {
+                    //"E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mouth_Image_Sets\\"
+                    Path source = Paths.get("resources\\mouth_image_sets\\"
+                            + sentenceData.getParsedImageSequence().get(i));
+                    Path destination = Paths.get("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\TestSequence\\"
+                            + fileCounter + "_"
+                            + sentenceData.getParsedImageSequence().get(i));
+
+                    Files.copy(source, destination);
+                    fileCounter++;
+
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @FXML
+    private File mExportFolderChooser(){
+
+        return new File("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\TestSequence\\");
     }
 }

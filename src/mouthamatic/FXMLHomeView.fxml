@@ -81,9 +81,12 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="imagesPerSymbolTextField" layoutX="98.0" layoutY="46.0" promptText="images Per Symbol" />
-                        <Button fx:id="exportImagesButton" layoutX="1078.0" layoutY="215.0" mnemonicParsing="false" onAction="#mExportImages" text="Export" />
-                        <TextField fx:id="outputDestTextField" layoutX="98.0" layoutY="215.0" prefHeight="25.0" prefWidth="400.0" promptText="Output Destination (Not Working Yet)" />
+                        <TextField fx:id="imagesPerSymbolTextField" layoutX="98.0" layoutY="149.0" promptText="images Per Symbol" />
+                        <Button fx:id="exportImagesButton" layoutX="98.0" layoutY="334.0" mnemonicParsing="false" onAction="#mExportImages" text="Export" />
+                        <TextField fx:id="outputDestTextField" layoutX="98.0" layoutY="276.0" prefHeight="25.0" prefWidth="400.0" promptText="Output Destination (Not Working Yet)" />
+                        <Label layoutX="98.0" layoutY="116.0" text="Enter the number of images (Frames) copied for each phoneme" />
+                        <Label layoutX="98.0" layoutY="247.0" text="Choose the destination folder" />
+                        <Button layoutX="522.0" layoutY="276.0" mnemonicParsing="false" onAction="#mExportFolderChooser" text="Folder Chooser" />
                      </children></AnchorPane>
               </content>
             </Tab>
