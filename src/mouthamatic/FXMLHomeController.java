@@ -28,6 +28,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -36,6 +37,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 /**
@@ -70,7 +73,7 @@ public class FXMLHomeController implements Initializable {
         mInitializeGenerateTab();
         mInitializeReportsView();
         mInitializeDataTab();
-        mLoadSymbolReferenceChart();
+
     }    
 
     //GENERATE TAB
@@ -145,6 +148,7 @@ public class FXMLHomeController implements Initializable {
 
         }
         mouthPairComboBox.setItems(FXCollections.observableList(choicesArray));
+        mouthPairComboBox.getSelectionModel().select(1); //Set initial choice.
     }
 
     //REPORTS TAB
@@ -406,6 +410,7 @@ public class FXMLHomeController implements Initializable {
         }
         dataMouthSetChoiceComboBox.setItems(FXCollections.observableList(choicesArray));
         //end Populate MouthPairType ComboBox
+        mLoadSymbolReferenceChart();
     }
 
     //DATA TAB
@@ -681,7 +686,10 @@ public class FXMLHomeController implements Initializable {
                     //"E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mouth_Image_Sets\\"
                     Path source = Paths.get("resources\\mouth_image_sets\\"
                             + sentenceData.getParsedImageSequence().get(i));
-                    Path destination = Paths.get("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\TestSequence\\"
+//                    Path destination = Paths.get("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\TestSequence\\"
+//                            + fileCounter + "_"
+//                            + sentenceData.getParsedImageSequence().get(i));
+                    Path destination = Paths.get(outputDestTextField.getText()
                             + fileCounter + "_"
                             + sentenceData.getParsedImageSequence().get(i));
 
@@ -699,7 +707,11 @@ public class FXMLHomeController implements Initializable {
     }
 
     @FXML
-    private File mExportFolderChooser(){
+    private File mExportFolderChooser(ActionEvent event){
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+        File selectedDirectory = directoryChooser.showDialog(stage);
+        outputDestTextField.setText(selectedDirectory.toString());
 
         return new File("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\TestSequence\\");
     }
