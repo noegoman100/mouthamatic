@@ -60,22 +60,28 @@ public class FXMLHomeController implements Initializable {
     @FXML private TableView reportsTableView;                   //REPORTS TAB
     @FXML private TextField outputDestTextField;                //EXPORT TAB
     @FXML private TextField imagesPerSymbolTextField;           //EXPORT TAB
+    private ImageExporter imageExporter
+            = new ImageExporter();
     @FXML private TableView dataTableView;                      //DATA TAB
     @FXML private TextField dataSearchWordTextField;            //DATA TAB
     private ObservableList<ObservableList> data;                //DATA TAB
-    //private ObservableList<ObservableList> wordData;            //DATA TAB
+    //private ObservableList<ObservableList> wordData;          //DATA TAB
     @FXML private ComboBox dataMouthSetChoiceComboBox;          //DATA TAB
     @FXML private ScrollPane referenceScrollPane;               //DATA TAB
     @FXML private TableView referenceChartTableView;            //DATA TAB
-    //private ObservableList<ObservableList> referenceListData;   //DATA TAB
+    //private ObservableList<ObservableList> referenceListData; //DATA TAB
     private WordSearch wordSearch
             = new WordSearch();                                 //DATA TAB
     private LoadReferenceImages loadReferenceImages
             = new LoadReferenceImages();                        //DATA TAB
     private LoadSymbolChart loadSymbolChart
             = new LoadSymbolChart();                            //DATA TAB
+    private MakeNewWord makeNewWord
+            = new MakeNewWord();                                //DATA TAB
     @FXML private TableView multiSearchTableView;               //SEARCH TAB
     @FXML private TextField multiSearchTextField;               //SEARCH TAB
+    private SearchLike searchLike
+            = new SearchLike();                                 //SEARCH TAB
 
 
     @Override
@@ -100,8 +106,6 @@ public class FXMLHomeController implements Initializable {
 
         scrollPaneAddImages.run(sentenceData, imageScrollPane);
     }
-
-
 
     //GENERATE TAB
     private void mInitializeGenerateTab(){
@@ -277,50 +281,8 @@ public class FXMLHomeController implements Initializable {
     //DATA TAB
     @FXML
     private void mNewWordButton(){
-        int phonemeCount = 0;
-
-        TextInputDialog dialog = new TextInputDialog("5");
-        dialog.setTitle("New Word");
-        dialog.setHeaderText("How many phoneme segments in this new word?");
-        dialog.setContentText("Word Phoneme Segments: ");
-        Optional<String> result = dialog.showAndWait();
-        //Check to see if a number was entered into the Phoneme Count Text Field
-        if (result.isPresent()){
-            phonemeCount = Integer.parseInt(result.get());
-            //TODO get next Available word_id
-            ResultSet nextWordIdRS;
-            String nextWordIdQuery = new String("SELECT MAX(word_id) FROM `word-to-phoneme`.word;");
-            nextWordIdRS = Main.db.sendQuery(nextWordIdQuery);
-            int nextAvailableId = 0;
-            try {
-                nextWordIdRS.next();//Get past blank row
-                nextAvailableId = nextWordIdRS.getInt(1);
-                nextAvailableId = nextAvailableId + 1;
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            //TODO Now, send an Update with a Blank word
-            String insertWordQuery = new String("INSERT INTO `word-to-phoneme`.`word` (`word_id`, `word_name`) VALUES ('" + nextAvailableId + "', 'NEWWORD');");
-            System.out.println("updateQuery: " + insertWordQuery);
-            Main.db.sendUpdate(insertWordQuery);
-
-            //TODO Build an insert Query with the correct number of parts
-            for(int i = 0; i < phonemeCount; i++) {
-                String insertPartsQuery = new String("INSERT INTO `word-to-phoneme`.`word_parts` (`word_id_pk1`, `part_segment_pk2`, `symbol_id_fk`) VALUES ('" +
-                        nextAvailableId + "', '" + (i+1) +
-                        "', '999');");
-                System.out.println("updateQuery: " + insertPartsQuery);
-                Main.db.sendUpdate(insertPartsQuery);
-            }
-
-            //TODO then send this new word to the search function
-
-            dataSearchWordTextField.setText("NEWWORD");
+            makeNewWord.run(dataSearchWordTextField);
             mWordSearchButton();
-        }
-
-
-
     }
 
     //DATA TAB
@@ -330,134 +292,19 @@ public class FXMLHomeController implements Initializable {
         String deleteQuery = new String("DELETE FROM `word-to-phoneme`.word WHERE word_name = '" + dataSearchWordTextField.getText() + "';");
         System.out.println(deleteQuery);
         Main.db.sendUpdate(deleteQuery);
+        mWordSearchButton();
     }
 
     //SEARCH TAB
     @FXML
     private void mMultiSearchButton(){ //TODO convert me to Search Tab
-        String word = new String(multiSearchTextField.getText());
-        ObservableList<ObservableList> wordData = FXCollections.observableArrayList();
-        int maxParts = 0;
-        try {
-            /**** Find the Max number of parts for the word being searched **/
-            String queryMaxParts = new String("SELECT max(part_segment_pk2) FROM `word-to-phoneme`.word_parts " +
-                    "INNER JOIN `word-to-phoneme`.word ON (word_id = word_id_pk1) " +
-                    "WHERE word_name LIKE '" + word + "%';");
-            System.out.println("queryMaxParts: " + queryMaxParts);
-            ResultSet maxPartsRS = Main.db.sendQuery(queryMaxParts);
-            maxPartsRS.next(); //TODO if the word is not there (or too long) an error occurs
-            maxParts = maxPartsRS.getInt(1);
-            //If maxParts == 0 (No word found), then clear the table and the search field
-            if (maxParts == 0) {
-                multiSearchTextField.setText("");
-                multiSearchTableView.getColumns().clear();
-                return;
-            }
-            /**** End Find Max Parts **/
-            /**** Build Query based on maxParts count **/
-            String queryAllParts = new String("SELECT word_name AS Word, ");
-            for (int i = 0; i < maxParts; i++){
-                queryAllParts = queryAllParts + "set" + (i+1) + ".symbol_id_fk AS Symbol" + (i+1);
-                if (i < maxParts -1){
-                    queryAllParts = queryAllParts + ", ";
-                }
-            }
-            queryAllParts = queryAllParts + " " + "FROM `word-to-phoneme`.word ";
-            for (int i = 0; i < maxParts; i++){
-                queryAllParts = queryAllParts + "LEFT OUTER JOIN `word-to-phoneme`.word_parts AS set" + (i+1) + " ON (word_id = set" + (i+1) + ".word_id_pk1 AND "
-                        + "set" + (i+1) + ".part_segment_pk2=" + (i+1) + ") ";
-            }
-            queryAllParts = queryAllParts + "WHERE word_name LIKE '" + word + "%'; ";
-            System.out.println("queryAllParts: " + queryAllParts);
-            /**** End Build Query based on max parts **/
-            ResultSet rs = Main.db.sendQuery(queryAllParts);
-            multiSearchTableView.getColumns().clear();
-
-            /**
-             * ********************************
-             * TABLE COLUMNS ADDED DYNAMICALLY *
-             *********************************
-             */
-            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
-                //We are using non property style for making dynamic table
-                final int j = i;
-                TableColumn col = new TableColumn(rs.getMetaData().getColumnLabel(i + 1));
-                //col.setCellFactory(TextFieldTableCell.forTableColumn()); //This makes the cells editable.
-                col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
-                    public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
-                        //Add a check for Null Values
-                        String valueString = new String();
-                        if (param.getValue().get(j) == null) {
-                            //System.out.println("value is Empty");
-                            valueString = new String("NULL");
-                        } else {
-                            //System.out.println("Value is not supposed to be Empty");
-                            valueString = param.getValue().get(j).toString();
-                        }
-                        return new SimpleStringProperty(valueString);
-                    }
-                });
-
-                multiSearchTableView.getColumns().addAll(col);
-            }
-
-            /**
-             * ******************************
-             * Data added to ObservableList *
-             *******************************
-             */
-            while (rs.next()) {
-                //Iterate Row
-                ObservableList<String> row = FXCollections.observableArrayList();
-                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                    //Iterate Column
-                    row.add(rs.getString(i));
-                }
-                wordData.add(row);
-
-            }
-
-            //FINALLY ADDED TO TableView
-            multiSearchTableView.setItems(wordData);
-            //multiSearchTableView.setEditable(true);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        searchLike.run(multiSearchTextField, multiSearchTableView);
     }
-
 
     //EXPORT TAB
     @FXML
     private void mExportImages(){
-        int imagesPerSymbol =  Integer.parseInt(imagesPerSymbolTextField.getText());
-        String outputDest = new String(outputDestTextField.getText()); //TODO Validate Input.
-        int fileCounter = 1;
-        try {
-            for (int i = 0; i < sentenceData.getParsedImageSequence().size(); i++){
-                for (int j = 0; j < imagesPerSymbol; j++) {
-                    //"E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mouth_Image_Sets\\"
-                    Path source = Paths.get("resources\\mouth_image_sets\\"
-                            + sentenceData.getParsedImageSequence().get(i));
-//                    Path destination = Paths.get("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\TestSequence\\"
-//                            + fileCounter + "_"
-//                            + sentenceData.getParsedImageSequence().get(i));
-                    Path destination = Paths.get(outputDestTextField.getText()
-                            + fileCounter + "_"
-                            + sentenceData.getParsedImageSequence().get(i));
-
-                    Files.copy(source, destination);
-                    fileCounter++;
-
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        imageExporter.run(imagesPerSymbolTextField, outputDestTextField, sentenceData);
     }
 
     @FXML
