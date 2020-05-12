@@ -82,7 +82,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="imagesPerSymbolTextField" layoutX="98.0" layoutY="149.0" promptText="images Per Symbol" />
+                        <TextField fx:id="imagesPerSymbolTextField" layoutX="98.0" layoutY="149.0" promptText="images Per Symbol" text="1" />
                         <Button fx:id="exportImagesButton" layoutX="98.0" layoutY="334.0" mnemonicParsing="false" onAction="#mExportImages" text="Export" />
                         <TextField fx:id="outputDestTextField" layoutX="98.0" layoutY="276.0" prefHeight="25.0" prefWidth="400.0" promptText="Output Destination (Not Working Yet)" text="E:\_Ed's Sweet Media\WGU Classes\WGU C868 - Capstone\TestSequence\" />
                         <Label layoutX="98.0" layoutY="116.0" text="Enter the number of images (Frames) copied for each phoneme" />
