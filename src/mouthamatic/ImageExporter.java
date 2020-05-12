@@ -1,6 +1,7 @@
 package mouthamatic;
 
 
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
 import java.io.FileNotFoundException;
@@ -11,7 +12,16 @@ import java.nio.file.Paths;
 
 public class ImageExporter {
     public void run(TextField imagesPerSymbolTextField, TextField outputDestTextField, SentenceData sentenceData){
-        if (sentenceData == null) return; //sentenceData needs to be Generated first. //TODO popup alert - Generate First
+        if (sentenceData == null) {
+            //sentenceData needs to be Generated first. //TODO popup alert - Generate First
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Sequence Found");
+            alert.setHeaderText("Generate a Sequence First");
+            alert.setContentText("Please go to the Generate Tab, and Generate a sequence for some dialog first.");
+
+            alert.showAndWait();
+            return;
+        }
         int imagesPerSymbol =  Integer.parseInt(imagesPerSymbolTextField.getText());
         String outputDest = new String(outputDestTextField.getText()); //TODO Validate Input.
         int fileCounter = 1;
@@ -21,18 +31,19 @@ public class ImageExporter {
                     //"E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\Project\\Resources\\Mouth_Image_Sets\\"
                     Path source = Paths.get("resources\\mouth_image_sets\\"
                             + sentenceData.getParsedImageSequence().get(i));
-//                    Path destination = Paths.get("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\TestSequence\\"
-//                            + fileCounter + "_"
-//                            + sentenceData.getParsedImageSequence().get(i));
                     Path destination = Paths.get(outputDestTextField.getText()
                             + fileCounter + "_"
                             + sentenceData.getParsedImageSequence().get(i));
-
                     Files.copy(source, destination);
                     fileCounter++;
-
                 }
             }
+            //Send a success dialog
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("The file sequence has been copied to the destination folder.");
+            alert.showAndWait();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
