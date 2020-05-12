@@ -58,6 +58,9 @@ public class FXMLHomeController implements Initializable {
             = new GetMouthPairId();                             //GENERATE TAB
     @FXML private ListView queryListView;                       //REPORTS TAB
     @FXML private TableView reportsTableView;                   //REPORTS TAB
+    private PopulateQueryTable populateQueryTable
+            = new PopulateQueryTable();                         //REPORTS TAB (Older Query Version)
+    @FXML private TextArea reportTextArea;                      //REPORTS TAB (Polymorph Version)
     @FXML private TextField outputDestTextField;                //EXPORT TAB
     @FXML private TextField imagesPerSymbolTextField;           //EXPORT TAB
     private ImageExporter imageExporter
@@ -150,92 +153,31 @@ public class FXMLHomeController implements Initializable {
 
             @Override
             public void handle(MouseEvent event) {
-                mPopulateReportsTable(queryListView.getSelectionModel().getSelectedItem().toString());
+                mPopulateQueryTable(queryListView.getSelectionModel().getSelectedItem().toString());
             }
 
         });
     }
 
-    //REPORTS TAB
-    private void mPopulateReportsTable(String selectionName){
-
-        data = FXCollections.observableArrayList();
-        ResultSet rsSelection = Main.db.sendQuery("SELECT report_query_string FROM `word-to-phoneme`.report_query "
-                + "WHERE report_query_name = '" + selectionName + "' "
-                + "ORDER BY report_query_name DESC LIMIT 1; ");
-        String selectedQuery = new String("Error Loading Query");
-        try {
-            rsSelection.next();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        try {
-            selectedQuery = rsSelection.getString(1);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        //Now!! We can send out the desired Query, then load the results into a dynamic table.
-        mSendQueryToTable(selectedQuery);
-
+    //REPORTS TAB (Old Query Version)
+    private void mPopulateQueryTable(String selectionName){
+        populateQueryTable.run(selectionName, reportsTableView);
     }
 
-    //REPORTS TAB Essentially an extension of the mPopulateReportsTable method.
-    private void mSendQueryToTable(String query){ //this method From: https://blog.ngopal.com.np/2011/10/19/dyanmic-tableview-data-from-database/
-        try {
-            ResultSet rs = Main.db.sendQuery(query);
-            reportsTableView.getColumns().clear();
-            reportsTableView.setEditable(true);
-            final EventHandler<TableColumn.CellEditEvent<ObservableList, String>> dataEditCommitHandler = new EventHandler<TableColumn.CellEditEvent<ObservableList, String>>() {
-                @Override
-                public void handle(TableColumn.CellEditEvent<ObservableList, String> event) {
-                    System.out.println("Send query to DB with data currently in the cell");//TODO temp.
+    //REPORTS TAB (Polymorph Version)
+    @FXML
+    private void mGenerateGenericReport(){
+        GenericReport genericReport = new GenericReport();
+        reportTextArea.clear();
+        reportTextArea.setText(genericReport.addAll());
+    }
 
-                }
-            };
-            /**
-             * ********************************
-             * TABLE COLUMN ADDED DYNAMICALLY *
-             *********************************
-             */
-            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
-                //We are using non property style for making dynamic table
-                final int j = i;
-                TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
-                //col.setCellFactory(TextFieldTableCell.forTableColumn()); //This makes the cells editable.
-                col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
-                    public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
-                        return new SimpleStringProperty(param.getValue().get(j).toString());
-                    }
-                });
-                col.setOnEditCommit(dataEditCommitHandler);
-                col.setEditable(true);
-                reportsTableView.getColumns().addAll(col);
-            }
-
-            /**
-             * ******************************
-             * Data added to ObservableList *
-             *******************************
-             */
-            while (rs.next()) {
-                //Iterate Row
-                ObservableList<String> row = FXCollections.observableArrayList();
-                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                    //Iterate Column
-                    row.add(rs.getString(i));
-                }
-                data.add(row);
-
-            }
-
-            //FINALLY ADDED TO TableView
-            reportsTableView.setItems(data);
-            reportsTableView.setEditable(true);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    //REPORTS TAB (Polymorph Version)
+    @FXML
+    private void mGenerateSpecificReportOne(){
+        GenericReport specificReportOne = new SpecificReportOne();
+        reportTextArea.clear();
+        reportTextArea.setText(specificReportOne.addAll());
     }
 
     //DATA TAB
@@ -307,6 +249,7 @@ public class FXMLHomeController implements Initializable {
         imageExporter.run(imagesPerSymbolTextField, outputDestTextField, sentenceData);
     }
 
+    //EXPORT TAB
     @FXML
     private File mExportFolderChooser(ActionEvent event){
         DirectoryChooser directoryChooser = new DirectoryChooser();

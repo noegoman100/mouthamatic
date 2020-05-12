@@ -8,6 +8,7 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -61,10 +62,13 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView fx:id="queryListView" layoutX="14.0" layoutY="86.0" prefHeight="650.0" prefWidth="200.0" />
-                        <TableView fx:id="reportsTableView" layoutX="245.0" layoutY="86.0" prefHeight="651.0" prefWidth="911.0" />
-                        <Label layoutX="15.0" layoutY="61.0" text="(Select a Query to Generate a Report)" />
-                        <Label layoutX="658.0" layoutY="61.0" text="(Report Output)" />
+                        <ListView fx:id="queryListView" layoutX="14.0" layoutY="416.0" prefHeight="320.0" prefWidth="200.0" />
+                        <TableView fx:id="reportsTableView" layoutX="245.0" layoutY="416.0" prefHeight="321.0" prefWidth="911.0" />
+                        <Label layoutX="16.0" layoutY="385.0" text="(Select a Query to Generate Output)" />
+                        <Label layoutX="658.0" layoutY="385.0" text="(Report Output)" />
+                        <Button layoutX="48.0" layoutY="44.0" mnemonicParsing="false" onAction="#mGenerateGenericReport" text="Generic Report" />
+                        <Button layoutX="43.0" layoutY="87.0" mnemonicParsing="false" onAction="#mGenerateSpecificReportOne" text="Specific Report 1" />
+                        <TextArea fx:id="reportTextArea" layoutX="246.0" layoutY="30.0" prefHeight="343.0" prefWidth="916.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
