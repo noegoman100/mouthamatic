@@ -51,6 +51,7 @@ public class WordSearch {
             queryAllParts = queryAllParts + "WHERE word_name='" + word + "'; ";
 
             /**** End Build Query based on max parts **/
+            //System.out.println(queryAllParts);
             ResultSet rs = Main.db.sendQuery(queryAllParts);
             dataTableView.getColumns().clear();
             dataTableView.setEditable(true);

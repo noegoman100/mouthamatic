@@ -180,6 +180,14 @@ public class FXMLHomeController implements Initializable {
         reportTextArea.setText(specificReportOne.addAll());
     }
 
+    //REPORTS TAB (Polymorph Version)
+    @FXML
+    private void mGenerateSpecificReportTwo(){
+        GenericReport specificReportTwo = new SpecificReportTwo();
+        reportTextArea.clear();
+        reportTextArea.setText(specificReportTwo.addAll());
+    }
+
     //DATA TAB
     @FXML
     private void mWordSearchButton(){

@@ -66,9 +66,12 @@
                         <TableView fx:id="reportsTableView" layoutX="245.0" layoutY="416.0" prefHeight="321.0" prefWidth="911.0" />
                         <Label layoutX="16.0" layoutY="385.0" text="(Select a Query to Generate Output)" />
                         <Label layoutX="658.0" layoutY="385.0" text="(Report Output)" />
-                        <Button layoutX="48.0" layoutY="44.0" mnemonicParsing="false" onAction="#mGenerateGenericReport" text="Generic Report" />
-                        <Button layoutX="43.0" layoutY="87.0" mnemonicParsing="false" onAction="#mGenerateSpecificReportOne" text="Specific Report 1" />
+                        <Button layoutX="48.0" layoutY="40.0" mnemonicParsing="false" onAction="#mGenerateGenericReport" text="Generic Report" />
+                        <Button layoutX="43.0" layoutY="97.0" mnemonicParsing="false" onAction="#mGenerateSpecificReportOne" text="Specific Report 1" />
                         <TextArea fx:id="reportTextArea" layoutX="246.0" layoutY="30.0" prefHeight="343.0" prefWidth="916.0" />
+                        <Button layoutX="43.0" layoutY="159.0" mnemonicParsing="false" onAction="#mGenerateSpecificReportTwo" text="Specific Report 2" />
+                        <Label layoutX="40.0" layoutY="122.0" text="Polymorphic Method" />
+                        <Label layoutX="40.0" layoutY="184.0" text="Polymorphic Method" />
                      </children></AnchorPane>
             </content>
           </Tab>
