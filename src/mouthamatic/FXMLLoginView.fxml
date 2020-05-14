@@ -8,8 +8,6 @@
 
 <AnchorPane id="AnchorPane" prefHeight="328.0" prefWidth="562.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mouthamatic.FXMLLoginController">
     <children>
-        <Button fx:id="button" layoutX="14.0" layoutY="289.0" onAction="#handleButtonAction" text="Click Me!" />
-        <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
       <Label layoutX="266.0" layoutY="14.0" text="Login" />
       <TextField fx:id="usernameTextField" layoutX="155.0" layoutY="108.0" prefHeight="25.0" prefWidth="372.0" />
       <Label layoutX="79.0" layoutY="112.0" text="Username" />

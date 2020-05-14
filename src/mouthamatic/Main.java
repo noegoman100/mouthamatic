@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 /**
@@ -22,8 +23,19 @@ public class Main extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        db.connect();
-        
+        try {
+            db.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Connection Error");
+            alert.setHeaderText(null);
+            alert.setContentText("The AWS Database may not be running, or some other connection problem");
+
+            alert.showAndWait();
+            return;
+        }
+
         ResultSet rs = db.sendQuery("SELECT * FROM user");
         while(rs.next()){
             System.out.println(rs.getString(2));

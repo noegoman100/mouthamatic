@@ -30,7 +30,7 @@ public class DB  {
 	private final String pass = "Uxh3wFzeZwyawn";
         //private String currentUser = new String("");
         //private int currentUserId = 0;
-    public void connect() {
+    public void connect() throws Exception {
         System.out.println("DatabaseConnection.connect() was called");
         try {
             //Class.forName(driver);  //This was for older version. No longer needed.
@@ -40,13 +40,15 @@ public class DB  {
             } else {
                 System.out.println("Database may already be connected");
             }
-	} catch (SQLException e) {
-            System.out.println("SQLException: "+e.getMessage());
-            System.out.println("SQLState: "+e.getSQLState());
-            System.out.println("VendorError: "+e.getErrorCode());
-	} catch (Exception e) {
-             System.out.println("Exception from DatabaseConnection.java : connect()");
-             e.printStackTrace();
+	        } catch (SQLException e) {
+                System.out.println("SQLException: "+e.getMessage());
+                System.out.println("SQLState: "+e.getSQLState());
+                System.out.println("VendorError: "+e.getErrorCode());
+                throw e;
+	        } catch (Exception e) {
+                 System.out.println("Exception from DatabaseConnection.java : connect()");
+                 e.printStackTrace();
+                 throw e;
         }//End Try
     }
 
