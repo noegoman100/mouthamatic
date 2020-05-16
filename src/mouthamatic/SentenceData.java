@@ -10,8 +10,6 @@ public class SentenceData {
 
     String rawSentence;
     List<Word> ParsedSentenceWordsList = new ArrayList<>();
-    List<String> parsedSentence;
-    List<Integer> parsedSymbols;
     List<String> parsedImageSequence;
     List<Image> parsedImages;
 
@@ -34,22 +32,6 @@ public class SentenceData {
 
     public void setRawSentence(String rawSentence) {
         this.rawSentence = rawSentence;
-    }
-
-    public List<String> getParsedSentence() {
-        return parsedSentence;
-    }
-
-    public void setParsedSentence(List<String> parsedSentence) {
-        this.parsedSentence = parsedSentence;
-    }
-
-    public List<Integer> getParsedSymbols() {
-        return parsedSymbols;
-    }
-
-    public void setParsedSymbols(List<Integer> parsedSymbols) {
-        this.parsedSymbols = parsedSymbols;
     }
 
     public List<String> getParsedImageSequence() {

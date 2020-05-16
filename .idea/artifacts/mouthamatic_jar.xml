@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="mouthamatic:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/mouthamatic_jar</output-path>
+    <root id="archive" name="mouthamatic.jar">
+      <element id="module-output" name="mouthamatic" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/mysql-connector-java-8.0.19.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

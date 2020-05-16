@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 public class ImageExporter {
     public void run(TextField imagesPerSymbolTextField, TextField outputDestTextField, SentenceData sentenceData){
         if (sentenceData == null) {
-            //sentenceData needs to be Generated first. //TODO popup alert - Generate First
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("No Sequence Found");
             alert.setHeaderText("Generate a Sequence First");
@@ -23,7 +22,7 @@ public class ImageExporter {
             return;
         }
         int imagesPerSymbol =  Integer.parseInt(imagesPerSymbolTextField.getText());
-        String outputDest = new String(outputDestTextField.getText()); //TODO Validate Input.
+        //String outputDest = new String(outputDestTextField.getText());
         int fileCounter = 1;
         try {
             for (int i = 0; i < sentenceData.getParsedImageSequence().size(); i++){

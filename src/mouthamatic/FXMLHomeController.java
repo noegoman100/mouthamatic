@@ -99,13 +99,13 @@ public class FXMLHomeController implements Initializable {
     @FXML
     private void generateButtonAction() {
 
-        System.out.println("*********** Start Data Transformation ***********");
+        //System.out.println("*********** Start Data Transformation ***********");
         sentenceData = new SentenceData(sentenceTextField.getText().toUpperCase());
         SentenceParser.parseSentence(sentenceData);
         WordParser.parseWords(sentenceData, 999);
         SymbolMapper.mapSymbolsTo(sentenceData, getMouthPairId.run(mouthPairComboBox));
         ImageMapper.mapImages(sentenceData);
-        System.out.println("*********** End Data Transformation ***********");
+        //System.out.println("*********** End Data Transformation ***********");
 
         scrollPaneAddImages.run(sentenceData, imageScrollPane);
     }
@@ -259,12 +259,12 @@ public class FXMLHomeController implements Initializable {
 
     //EXPORT TAB
     @FXML
-    private File mExportFolderChooser(ActionEvent event){
+    private void mExportFolderChooser(ActionEvent event){
         DirectoryChooser directoryChooser = new DirectoryChooser();
         Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
         File selectedDirectory = directoryChooser.showDialog(stage);
-        outputDestTextField.setText(selectedDirectory.toString());
+        outputDestTextField.setText(selectedDirectory.toString() + "\\");
 
-        return new File("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\TestSequence\\");
+        //return new File("E:\\_Ed's Sweet Media\\WGU Classes\\WGU C868 - Capstone\\TestSequence\\");
     }
 }
