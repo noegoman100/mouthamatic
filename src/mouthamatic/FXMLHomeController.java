@@ -103,7 +103,7 @@ public class FXMLHomeController implements Initializable {
         sentenceData = new SentenceData(sentenceTextField.getText().toUpperCase());
         SentenceParser.parseSentence(sentenceData);
         WordParser.parseWords(sentenceData, 999);
-        SymbolMapper.mapSymbolsTo(sentenceData, getMouthPairId.run(mouthPairComboBox));
+        SymbolMapper.mapSymbolsTo(sentenceData, getMouthPairId.run(mouthPairComboBox), 999);
         ImageMapper.mapImages(sentenceData);
         //System.out.println("*********** End Data Transformation ***********");
 

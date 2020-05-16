@@ -14,7 +14,7 @@ import java.util.Arrays;
  */
 public class SentenceParser {
 
-    public static SentenceData parseSentence(SentenceData sentenceData){
+    public static void parseSentence(SentenceData sentenceData){
         ArrayList<String> wordList = new ArrayList<String>();
         String[] words = sentenceData.getRawSentence().split("[ .,!?;:@#&]+");
         wordList.addAll(Arrays.asList(words));
@@ -24,6 +24,6 @@ public class SentenceParser {
             sentenceData.getParsedSentenceWordsList().add(new Word(currentWord.toUpperCase()));
         }
 
-        return sentenceData;
+        //return sentenceData;
     }
 }

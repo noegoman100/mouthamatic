@@ -7,13 +7,13 @@ import java.util.List;
 
 public class SymbolMapper {
 
-    public static SentenceData mapSymbolsTo(SentenceData sentenceData, int mouth_pair_id){
+    public static SentenceData mapSymbolsTo(SentenceData sentenceData, int mouth_pair_id, int blankSymbolId){
         ResultSet rs;
         ResultSet noPhenomeImageRS;
         List<String> imageSequence = new ArrayList<>();
         //noPhonomeImageRS is for adding a no-sound image between words
         noPhenomeImageRS = Main.db.sendQuery("SELECT image_url FROM `word-to-phoneme`.image_map WHERE symbol_id_pk2 = "
-                + "999 "
+                + blankSymbolId + " "
                 + " AND mouth_pair_id_pk1 = " + mouth_pair_id
                 + ";");
         try {
