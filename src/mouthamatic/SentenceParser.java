@@ -21,7 +21,7 @@ public class SentenceParser {
         //sentenceData.setParsedSentence(wordList);
         //Below is the new Word object, replacing String object
         for (String currentWord: wordList) {
-            sentenceData.getParsedSentenceWordsList().add(new Word(currentWord));
+            sentenceData.getParsedSentenceWordsList().add(new Word(currentWord.toUpperCase()));
         }
 
         return sentenceData;
