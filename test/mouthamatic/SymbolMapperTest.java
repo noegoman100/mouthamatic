@@ -15,7 +15,7 @@ class SymbolMapperTest {
         SentenceData sentenceData = new SentenceData("Test. One, Two; THREE");
         SentenceParser.parseSentence(sentenceData);
         WordParser.parseWords(sentenceData, 999);
-        SymbolMapper.mapSymbolsTo(sentenceData, 4, 999); //mouth_pair_id of 4 should be the Alpha Set.
+        SymbolMapper.mapSymbolsTo(sentenceData, 4, 999); //mouth_pair_id of 4 is selected.
 
         //TEST = (0) 999 -> Set7, (1) 70 -> Set8, (2) 31 -> Set1, (3) 68 -> Set5, (4) 70 -> Set8
         assertEquals("Mike-LipSet-Layers-Alpha_07.png", sentenceData.parsedImageSequence.get(0));

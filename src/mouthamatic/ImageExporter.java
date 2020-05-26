@@ -45,8 +45,16 @@ public class ImageExporter {
             alert.showAndWait();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.out.println("FileNotFound");
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("IO Exception");
+            //Send a success dialog
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Uh oh. ");
+            alert.setHeaderText(null);
+            alert.setContentText("Files may already be present in destination folder.");
+            alert.showAndWait();
         }
     }
 }
