@@ -26,8 +26,8 @@ public class DB  {
         //private final String driver = "com.mysql.jdbc.Driver";
 	private final String db = "word-to-phoneme";
 	private final String url = "jdbc:mysql://phoneme-db.crm7fj6xpwpv.us-west-1.rds.amazonaws.com/" + db;
-	private final String user = "admin";
-	private final String pass = "Uxh3wFzeZwyawn";
+    private final String user = "appuser";
+    private final String pass = "testPassword123";
         //private String currentUser = new String("");
         //private int currentUserId = 0;
     public void connect() throws Exception {
