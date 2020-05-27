@@ -42,7 +42,11 @@ public class LoadReferenceImages {
                 symbolId = referenceImagesRs.getInt(2);
                 imageFileName = referenceImagesRs.getString(3);
                 TextField symbolNameTextField = new TextField(symbolName);
+                symbolNameTextField.setEditable(false);
+                //symbolNameTextField.setDisable(true);
                 TextField symbolIdTextField = new TextField(Integer.toString(symbolId));
+                symbolIdTextField.setEditable(false);
+                //symbolIdTextField.setDisable(true);
                 String filePath = "resources\\mouth_image_sets\\" + imageFileName;
                 FileInputStream inputStream = null;
                 try {
