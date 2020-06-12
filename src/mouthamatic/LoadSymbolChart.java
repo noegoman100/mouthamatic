@@ -66,3 +66,4 @@ public class LoadSymbolChart {
         referenceChartTableView.setItems(referenceListData);
     }
 }
+

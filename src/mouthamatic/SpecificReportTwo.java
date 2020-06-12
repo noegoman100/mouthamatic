@@ -35,3 +35,4 @@ public class SpecificReportTwo extends GenericReport{
     }
 
 }
+

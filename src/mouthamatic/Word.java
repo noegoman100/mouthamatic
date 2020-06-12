@@ -28,3 +28,4 @@ public class Word {
         this.orderedPhonemes = phonemes;
     }
 }
+

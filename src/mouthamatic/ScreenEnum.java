@@ -12,3 +12,4 @@ package mouthamatic;
 public enum ScreenEnum {
     LOGIN, HOME;
 }
+

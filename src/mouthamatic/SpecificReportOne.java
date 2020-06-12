@@ -33,3 +33,4 @@ public class SpecificReportOne extends GenericReport{
     }
 
 }
+

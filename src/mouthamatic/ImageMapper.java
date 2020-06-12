@@ -28,3 +28,4 @@ public class ImageMapper {
         return sentenceData;
     }
 }
+

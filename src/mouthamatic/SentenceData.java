@@ -50,3 +50,4 @@ public class SentenceData {
         this.ParsedSentenceWordsList = parsedSentenceWords;
     }
 }
+

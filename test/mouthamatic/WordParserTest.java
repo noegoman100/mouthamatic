@@ -37,4 +37,5 @@ class WordParserTest {
         assertEquals(50, sentenceData.getParsedSentenceWordsList().get(3).getPhonemes().get(3));
     }
 
+
 }

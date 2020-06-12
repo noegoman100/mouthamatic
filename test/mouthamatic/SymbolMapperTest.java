@@ -39,4 +39,5 @@ class SymbolMapperTest {
         assertEquals("Mike-LipSet-Layers-Alpha_04.png", sentenceData.parsedImageSequence.get(15));
     }
 
+
 }
