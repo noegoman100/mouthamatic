@@ -14,7 +14,8 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Ed
+ * This Class takes the SentenceData object, and sends each word through the database to obtain
+ * its Symbol IDs (phonemes). It them adds these symbols to the Word object inside the SentenceData object.
  */
 public class WordParser {
     
